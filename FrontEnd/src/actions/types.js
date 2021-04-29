@@ -1,0 +1,16 @@
+export const GET_CLIENTS = "GET_CLIENTS";
+export const LOGIN_USER = "LOGIN_USER";
+export const REGISTER_USER = "REGISTER_USER";
+export const SEND_EMAIL = "SEND_EMAIL";
+export const LOAD_UNAPPROVED_JOBS = "LOAD_UNAPPROVED_JOBS";
+export const APPROVE_JOBS = "APPROVE_JOBS";
+export const GET_NOTES = "GET_NOTES";
+export const GET_ALL_JOBS = "GET_ALL_JOBS";
+export const GET_ALL_COMPANIES = "GET_ALL_COMPANIES";
+export const GET_ALL_WEBINARS = "GET_ALL_WEBINARS";
+export const GET_ALL_USERS = "GET_ALL_USERS";
+export const GET_ADMIN_DETAILS = "GET_ADMIN_DETAILS";
+export const GET_USER_DETAILS = "GET_USER_DETAILS";
+export const GET_MOCK_TESTS = "GET_MOCK_TESTS";
+export const GET_CONSULTANTS = "GET_CONSULTANTS";
+export const GET_ADMINS = "GET_ADMINS";
