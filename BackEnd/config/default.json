@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://vedant1723:vedant1723@manglam.pvqte.mongodb.net/ManglamDB?retryWrites=true&w=majority",
+    "jwtSecret":"h37703e7r3t"
+}
