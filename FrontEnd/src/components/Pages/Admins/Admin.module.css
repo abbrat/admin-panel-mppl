@@ -1,0 +1,16 @@
+.access__label {
+  font-size: 0.9rem !important;
+  margin-left: 0.2rem;
+  margin-right: 1rem;
+  margin-top: 3px;
+}
+
+.access__div {
+  position: relative;
+}
+
+.access__div--input {
+  position: absolute;
+  top: 212px;
+  left: 90px;
+}

@@ -1,19 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   approveJobs,
   deleteJobByID,
   getUnApprovedJobs,
 } from "../../../actions/adminActions";
+import { useHistory } from "react-router";
+
 import Moment from "react-moment";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
-const PendingJobs = (props) => {
-  console.log(props);
+const PendingJobs = () => {
   // const selector = useSelector((state) => state);
   // const dispatch = useDispatch();
-  useEffect(() => {});
+
+  const [jobs, setJobs] = useState([]);
+
+  const history = useHistory();
+
+  const getAllUnApprovedJobs = async () => {
+    const jobs = await getUnApprovedJobs();
+    await setJobs(jobs);
+  };
+
+  const approveJobsById = async (id) => {
+    const isApproved = await approveJobs(id);
+    if (isApproved) {
+      setJobs((prevState) => {
+        return prevState.filter((job) => {
+          return job._id !== id;
+        });
+      });
+    }
+  };
+
+  const deleteJob = async (id) => {
+    const isDeleted = await deleteJobByID(id);
+    if (isDeleted) {
+      setJobs((prevState) => {
+        return prevState.filter((job) => {
+          return job._id !== id;
+        });
+      });
+    }
+  };
+
+  useEffect(() => {
+    getAllUnApprovedJobs();
+  }, []);
+
   return (
     <div>
       <div class='main-panel'>
@@ -38,10 +74,10 @@ const PendingJobs = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!Array.isArray(props.unApprovedJobs) ? (
+                        {jobs.length === 0 ? (
                           <p>No Unapproved Jobs</p>
                         ) : (
-                          props.unApprovedJobs.map((job) => {
+                          jobs.map((job) => {
                             return (
                               <tr>
                                 <td>{job.JobTitle}</td>
@@ -65,6 +101,13 @@ const PendingJobs = (props) => {
                                       padding: "10px",
                                       paddingLeft: "15px",
                                       paddingRight: "15px",
+                                    }}
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "selectedJob",
+                                        JSON.stringify(job)
+                                      );
+                                      history.push("/edit-jobs");
                                     }}>
                                     View
                                   </button>
@@ -73,7 +116,7 @@ const PendingJobs = (props) => {
                                   <button
                                     class='btn  btn-rounded btn-dark'
                                     onClick={() => {
-                                      props.approveJobs(job._id);
+                                      approveJobsById(job._id);
                                     }}
                                     style={{
                                       padding: "9px",
@@ -89,7 +132,7 @@ const PendingJobs = (props) => {
                                       padding: "9px",
                                     }}
                                     onClick={() => {
-                                      props.deleteJobByID(job._id);
+                                      deleteJob(job._id);
                                     }}>
                                     Delete
                                   </button>
@@ -127,7 +170,7 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  getUnApprovedJobs,
-  approveJobs,
-  deleteJobByID,
+  // getUnApprovedJobs,
+  // approveJobs,
+  // deleteJobByID,
 })(PendingJobs);

@@ -1,13 +1,35 @@
 import React, { useEffect } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { getBannedAdmins, unBanAdmin } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 
 const BlockedAdmins = (props) => {
+  const [bannedAdmins, setBannedAdmins] = useState([]);
+
+  const getAllBannedAdmins = async () => {
+    const admins = await getBannedAdmins();
+    console.log(admins);
+    await setBannedAdmins(admins);
+  };
+
+  const unBanConsultant = async (id) => {
+    const unbannedAdmin = await unBanAdmin(id);
+    console.log(unbannedAdmin);
+    if (unbannedAdmin) {
+      setBannedAdmins((prevState) => {
+        return prevState.filter((admin) => {
+          return admin._id !== id;
+        });
+      });
+    }
+  };
+
   useEffect(() => {
-    getBannedAdmins();
-  });
+    getAllBannedAdmins();
+  }, []);
+
   return (
     <div>
       <div class='main-panel'>
@@ -30,10 +52,12 @@ const BlockedAdmins = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!Array.isArray(props.admins) ? (
-                          <p>No Admins Created</p>
+                        {bannedAdmins === undefined ||
+                        bannedAdmins.length === 0 ? (
+                          <p>No Blocked Admins</p>
                         ) : (
-                          props.admins.map((admin) => {
+                          bannedAdmins.length !== 0 &&
+                          bannedAdmins.map((admin) => {
                             return (
                               <tr>
                                 <td>{admin.empID}</td>
@@ -70,7 +94,7 @@ const BlockedAdmins = (props) => {
                                       paddingRight: "10px",
                                     }}
                                     onClick={() => {
-                                      unBanAdmin(admin._id);
+                                      unBanConsultant(admin._id);
                                     }}>
                                     Unblock
                                   </button>
@@ -103,7 +127,7 @@ const BlockedAdmins = (props) => {
   );
 };
 const mapStateToProps = (state) => ({
-  admins: state.admin.admins,
+  // admins: state.admin.admins,
 });
 
 export default connect(mapStateToProps, {

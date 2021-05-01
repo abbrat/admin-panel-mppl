@@ -21,7 +21,7 @@ const useFilterData = (fItems, config = null) => {
   const filterItems = useMemo(() => {
     let filterableItems;
     if (fItems) {
-      filterableItems = [...fItems];
+      filterableItems = fItems && [...fItems];
     }
     if (filterConfig !== null) {
       filterableItems = filterableItems.filter((job) => {
@@ -48,7 +48,7 @@ const useSortableData = (items, config = null) => {
   const sortedItems = useMemo(() => {
     let sortableItems;
     if (items) {
-      sortableItems = [...items];
+      sortableItems = items && [...items];
     }
     if (sortCoonfig !== null) {
       sortableItems.sort((a, b) => {
@@ -99,28 +99,46 @@ const PostedJobs = (props) => {
   const [pageNo, setPageNo] = useState("1");
   const [page, setPage] = useState();
 
+  const [allJobs, setAllJobs] = useState([]);
+
+  const { items, requestSort, sortCoonfig } = useSortableData(arr);
+  const { fItems, requestFilter, filterConfig } = useFilterData(arr);
+
   const getJobs = async () => {
     try {
       const res = await axios.get(
         "http://localhost:5000/api/jobs/users/" + pageNo + "/" + perPage
       );
       setArr(res.data.users);
-      setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
     }
   };
 
+  const gettingAllJobs = async () => {
+    const jobs = await getAllJobs();
+    console.log(jobs);
+    await setAllJobs(jobs);
+  };
+
   const deleteJobs = async (id) => {
     try {
-      console.log("Called");
-      const jobs = await deleteJobByID(id);
-      console.log(jobs);
-      setArr(jobs);
+      const isJobDeleted = await deleteJobByID(id);
+      if (isJobDeleted) {
+        setArr((prevState) => {
+          return prevState.filter((job) => {
+            return job._id !== id;
+          });
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    gettingAllJobs();
+  }, []);
 
   useEffect(() => {
     // getAllJobs();
@@ -167,12 +185,8 @@ const PostedJobs = (props) => {
   //   // }
   // };
 
-  const { items, requestSort, sortCoonfig } = useSortableData(arr);
-  const { fItems, requestFilter, filterConfig } = useFilterData(arr);
-
   const resetFilter = () => {
     setNameFilter("");
-    // setJobs(props.jobs);
   };
 
   const [open, setOpen] = useState(false);
@@ -350,7 +364,7 @@ const PostedJobs = (props) => {
                             boundaryCount={1}
                             variant='outlined'
                             shape='rounded'
-                            count={page}
+                            count={Math.ceil(allJobs && allJobs.length / 10)}
                             onChange={(e) => {
                               if (e.target.textContent === "") {
                                 var no = parseInt(pageNo);

@@ -2,7 +2,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { banAdmin, getAdmins } from "../../../actions/adminActions";
+import { banAdminById, getAdmins } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 
@@ -13,21 +13,44 @@ const Admins = (props) => {
   const [pageNo, setPageNo] = useState("1");
   const [page, setPage] = useState();
 
+  const [admins, setAdmins] = useState([]);
+
   const getAllAdmins = async () => {
     try {
       const res = await axios.get(
         "http://localhost:5000/api/admin/users/" + pageNo + "/" + perPage
       );
-      setAdminArr(res.data.users);
-      setPage(Math.ceil(res.data.length / 10));
+      setAdminArr(res.data.admins);
+      // setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
     }
   };
+
+  const gettingAllAdmins = async () => {
+    const admins = await getAdmins();
+    console.log("Admins", admins);
+    await setAdmins(admins);
+  };
+
+  const banAdmin = async (id) => {
+    const bannedAdmin = await banAdminById(id);
+    console.log(bannedAdmin);
+    if (bannedAdmin) {
+      setAdminArr((prevState) => {
+        return prevState.filter((admin) => {
+          return admin._id !== id;
+        });
+      });
+    }
+  };
+
   useEffect(() => {
-    // props.getAdmins();
+    gettingAllAdmins();
+  }, []);
+
+  useEffect(() => {
     getAllAdmins();
-    console.log(adminArr);
   }, [pageNo]);
   return (
     <div>
@@ -45,7 +68,7 @@ const Admins = (props) => {
                       boundaryCount={1}
                       variant='outlined'
                       shape='rounded'
-                      count={page}
+                      count={Math.ceil(admins && admins.length / 10)}
                       onChange={(e) => {
                         if (e.target.textContent === "") {
                           var no = parseInt(pageNo);
@@ -105,15 +128,19 @@ const Admins = (props) => {
                                   </button>
                                   <button
                                     class='btn  btn-rounded btn-danger'
+                                    disabled={admin.banAccount}
                                     style={{
                                       padding: "9px",
                                       paddingLeft: "10px",
                                       paddingRight: "10px",
+                                      backgroundColor: admin.banAccount
+                                        ? "green"
+                                        : "red",
                                     }}
                                     onClick={() => {
                                       banAdmin(admin._id);
                                     }}>
-                                    Block
+                                    {admin.banAccount ? "Banned" : "Block"}
                                   </button>
                                 </td>
                               </tr>

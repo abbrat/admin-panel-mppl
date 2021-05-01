@@ -46,6 +46,7 @@ const AddJobs = (props) => {
   const [companies, setCompanies] = useState([]);
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
+
   const getCompanies = async () => {
     let arr = [];
     try {
@@ -93,7 +94,7 @@ const AddJobs = (props) => {
         "http://localhost:5000/api/company/details/" + id
       );
       setContactEmail(res.data.CompanyEmail);
-      setContactNumber(res.data.CompanyContact);
+      setContactNumber(parseInt(res.data.CompanyContact));
       setLogo(res.data.Logo);
       setAboutCompany(res.data.AboutCompany);
       setCompanyHireRate(res.data.CompanyHireRate);
@@ -114,6 +115,62 @@ const AddJobs = (props) => {
     getCompanies();
     getCategories();
   }, []);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    const job = {
+      PublishType: PublishType || "",
+      Qualificaiton: Qualificaiton || "",
+      Location: Location || "",
+      CompanyHireRate: CompanyHireRate || "",
+      CompanyName: CompanyName || "",
+      Desgination: Desgination || "",
+      ContactEmail: ContactEmail || "",
+      ContactNumber: ContactNumber || "",
+      ContactPerson: ContactPerson || "",
+      JobTitle: JobTitle || "",
+      JobType: JobType || "",
+      Description: Description || "",
+      SalaryRange: SalaryRange || "",
+      PreviousExp: PreviousExp || "",
+      Starting: Starting || "",
+      Category: Category || "",
+      ExpectedCTC: ExpectedCTC || "",
+      Industry: Industry || "",
+      KeySkills: KeySkills || "",
+      Remarks: Remarks || "",
+      CompanyMemberSince: CompanyMemberSince || "",
+      JobStatus: JobStatus || "",
+      Logo: Logo || "",
+      AboutCompany: AboutCompany || "",
+      Validity: Validity || "",
+      Positions: Positions || "",
+      Questions: Questions || "",
+      PostingType: PostingType || "",
+    };
+
+    const jobInputArray = Object.keys(job);
+
+    const isJobInputEmptpy = jobInputArray.every((jobInput) => {
+      return job[jobInput].length !== 0;
+    });
+
+    if (!isJobInputEmptpy) {
+      return makeToast("error", "Please add all the fields");
+    }
+
+    const create = await createJob(job);
+
+    if (create) {
+      makeToast("success", "Success");
+      history.push("/posted-jobs");
+    } else {
+      makeToast("error", "Error");
+      // history.push("/posted-jobs");
+    }
+  };
+
   return (
     <div>
       <div class='main-panel'>
@@ -187,6 +244,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={JobTitle}
                               onChange={(e) => {
                                 setJobTitle(e.target.value);
@@ -204,6 +262,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={JobType}
                               onChange={(e) => {
                                 setJobType(e.target.value);
@@ -221,6 +280,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={SalaryRange}
                               onChange={(e) => {
                                 setSalaryRange(e.target.value);
@@ -277,6 +337,7 @@ const AddJobs = (props) => {
                           </label>
                           <div class='col-sm-9'>
                             <input
+                              required={true}
                               type='text'
                               value={Desgination}
                               onChange={(e) => {
@@ -298,6 +359,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={ContactPerson}
                               onChange={(e) => {
                                 setContactPerson(e.target.value);
@@ -318,6 +380,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={ContactNumber}
                               onChange={(e) => {
                                 setContactNumber(e.target.value);
@@ -338,6 +401,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={ContactEmail}
                               onChange={(e) => {
                                 setContactEmail(e.target.value);
@@ -371,7 +435,10 @@ const AddJobs = (props) => {
                           </label>
                           <select
                             class='form-control col-sm-9'
-                            id='exampleFormControlSelect2'>
+                            id='exampleFormControlSelect2'
+                            onChange={(e) => {
+                              setStarting(e.target.value);
+                            }}>
                             <option>Immediately</option>
                             <option>1 Months</option>
                             <option>2 Months</option>
@@ -415,6 +482,7 @@ const AddJobs = (props) => {
                               options={locations}
                               placeholder='Locations'
                               onChange={(e) => {
+                                console.log(e.value);
                                 setLocation(e.value);
                               }}
                             />
@@ -480,6 +548,7 @@ const AddJobs = (props) => {
                             class='input-group date datepicker col-sm-9'>
                             <input
                               type='date'
+                              required={true}
                               class='form-control'
                               value={Validity}
                               onChange={(e) => {
@@ -498,6 +567,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               disabled
                               value={Logo}
                               onChange={(e) => {
@@ -517,7 +587,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
-                              disabled
+                              required={true}
                               value={AboutCompany}
                               onChange={(e) => {
                                 setAboutCompany(e.target.value);
@@ -536,6 +606,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='number'
+                              required={true}
                               value={Positions}
                               onChange={(e) => {
                                 setPositions(e.target.value);
@@ -556,6 +627,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={Questions}
                               onChange={(e) => {
                                 setQuestions(e.target.value);
@@ -573,6 +645,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={Qualificaiton}
                               onChange={(e) => {
                                 setQualificaiton(e.target.value);
@@ -590,6 +663,7 @@ const AddJobs = (props) => {
                           <div class='col-sm-9'>
                             <input
                               type='text'
+                              required={true}
                               value={ExpectedCTC}
                               onChange={(e) => {
                                 setExpectedCTC(e.target.value);
@@ -625,6 +699,7 @@ const AddJobs = (props) => {
                             <input
                               type='text'
                               value={KeySkills}
+                              required={true}
                               onChange={(e) => {
                                 setKeySkills(e.target.value);
                               }}
@@ -640,6 +715,7 @@ const AddJobs = (props) => {
                             <input
                               type='text'
                               value={Remarks}
+                              required={true}
                               onChange={(e) => {
                                 setRemarks(e.target.value);
                               }}
@@ -674,6 +750,7 @@ const AddJobs = (props) => {
                             <input
                               type='text'
                               disabled
+                              required={true}
                               value={CompanyHireRate}
                               onChange={(e) => {
                                 setCompanyHireRate(e.target.value);
@@ -695,6 +772,7 @@ const AddJobs = (props) => {
                               type='text'
                               class='form-control'
                               disabled
+                              required={true}
                               value={CompanyMemberSince}
                               onChange={(e) => {
                                 setCompanyMemberSince(e.target.value);
@@ -715,6 +793,7 @@ const AddJobs = (props) => {
                             <input
                               type='text'
                               value={JobStatus}
+                              required={true}
                               onChange={(e) => {
                                 setJobStatus(e.target.value);
                               }}
@@ -759,9 +838,10 @@ const AddJobs = (props) => {
                                 <input
                                   type='radio'
                                   name='featured'
-                                  value={PostingType}
+                                  value={"true"}
+                                  required={true}
                                   onChange={(e) => {
-                                    setPostingType(e.target.value);
+                                    setPostingType("true");
                                   }}
                                 />
                               </div>
@@ -770,11 +850,12 @@ const AddJobs = (props) => {
                                   False
                                 </label>
                                 <input
+                                  required
                                   type='radio'
                                   name='featured'
-                                  value={PostingType}
+                                  value={"false"}
                                   onChange={(e) => {
-                                    setPostingType(e.target.value);
+                                    setPostingType("false");
                                   }}
                                 />
                               </div>
@@ -785,46 +866,7 @@ const AddJobs = (props) => {
                     </div>
                     <button
                       type='button'
-                      onClick={() => {
-                        setSaved(
-                          createJob({
-                            PublishType,
-                            Qualificaiton,
-                            Location,
-                            CompanyHireRate,
-                            CompanyName,
-                            Desgination,
-                            ContactEmail,
-                            ContactNumber,
-                            ContactPerson,
-                            JobTitle,
-                            JobType,
-                            Description,
-                            SalaryRange,
-                            PreviousExp,
-                            Category,
-                            ExpectedCTC,
-                            Industry,
-                            KeySkills,
-                            Remarks,
-                            CompanyMemberSince,
-                            JobStatus,
-                            Logo,
-                            AboutCompany,
-                            Validity,
-                            Positions,
-                            Questions,
-                            PostingType,
-                          })
-                        );
-                        if (saved) {
-                          makeToast("success", "Success");
-                          history.push("/posted-jobs");
-                        } else {
-                          makeToast("error", "Error");
-                          // history.push("/posted-jobs");
-                        }
-                      }}
+                      onClick={submitHandler}
                       class='btn btn-primary mr-2'>
                       Submit
                     </button>

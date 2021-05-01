@@ -1,0 +1,38 @@
+{
+  "name": "project-manglam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "TD",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.7.0",
+    "gridfs-stream": "^1.1.1",
+    "html-pdf": "^2.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
+    "moment": "^2.29.1",
+    "mongo-oplog": "^2.1.4",
+    "mongoose": "^5.11.1",
+    "multer": "^1.4.2",
+    "multer-gridfs-storage": "^4.2.0",
+    "nodemailer": "^6.4.16",
+    "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "razorpay": "^2.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "proxy": "http://localhost:5000"
+}

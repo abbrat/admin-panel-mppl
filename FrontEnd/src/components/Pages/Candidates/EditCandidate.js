@@ -11,6 +11,7 @@ import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import makeToast from "../../../Toaster";
 import axios from "axios";
+import InputArray from "./InputArray";
 
 const EditCandidate = (props) => {
   const [edit, setEdit] = useState(false);
@@ -18,13 +19,21 @@ const EditCandidate = (props) => {
   const [user, setUser] = useState({
     user: JSON.parse(localStorage.getItem("userSelected")),
   });
-  console.log(user);
 
   const [name, setName] = useState(user.user.name || "");
   const [email, setEmail] = useState(user.user.email || "");
   const [number, setNumber] = useState(user.user.number || "");
   const [gender, setGender] = useState(user.user.gender || "");
   const [address, setAddress] = useState(user.user.address || "");
+
+  const [workLocationArray, setLocationArray] = useState([]);
+  const [workLocationVal, setWorkLocationVal] = useState("");
+
+  const [skillArray, setSkillArray] = useState([]);
+  const [skillVal, setSkillVal] = useState("");
+
+  const [languageArray, setLanguageArray] = useState([]);
+  const [langVal, setLangval] = useState("");
 
   const [about, setAbout] = useState(user.user.about || "");
   const [linkdin, setLinkdin] = useState(user.user.linkdin || "");
@@ -65,46 +74,11 @@ const EditCandidate = (props) => {
     return formatted_date;
   }
 
-  const getUser = async (id) => {
-    try {
-      const config = {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      };
-      const res = await axios.get(
-        "http://localhost:5000/api/profile/details/" + id,
-        config
-      );
-      console.log(res.data.profileData);
-      let dob1 = res.data.profileData.dateOfBirth
-        .split("/")
-        .reverse()
-        .join("-");
+  const dataSubmit = async () => {
+    // console.log("Location", workLocationArray);
+    // console.log("Skills", skillArray);
+    // console.log("Language", languageArray);
 
-      setName(res.data.profileData.name);
-      setEmail(res.data.profileData.email);
-      setNumber(res.data.profileData.gender);
-      setGender(res.data.profileData.gender);
-      setAddress(
-        res.data.profileData.addressLine1 +
-          " " +
-          res.data.profileData.addressLine2
-      );
-      setAbout(res.data.profileData.aboutUser);
-      setLinkdin(res.data.profileData.gender);
-      setDOB(dob1);
-      setMaritalStatus(res.data.profileData.maritalStatus);
-      setSubscription(res.data.profileData.gender);
-      setPreferedWorkLocation(res.data.profileData.preferredLocation);
-
-      return res.data;
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const dataSubmit = () => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -119,23 +93,26 @@ const EditCandidate = (props) => {
     // formData.append("subscription", subscription);
     formData.append("videoResume", videoResume);
     formData.append("resume", resume);
-    setSaved(
-      updateUserById(
-        {
-          name,
-          email,
-          number,
-          gender,
-          address,
-          about,
-          linkdin,
-          dob,
-          maritalStatus,
-        },
-        user.user._id
-      )
+
+    const isUserUpdated = await updateUserById(
+      {
+        name,
+        email,
+        number,
+        gender,
+        address,
+        about,
+        linkdin,
+        dob,
+        maritalStatus,
+        preferedWorkLocation: workLocationArray,
+      },
+      user.user._id
     );
-    if (saved) {
+
+    console.log(isUserUpdated);
+
+    if (isUserUpdated) {
       makeToast("success", "Updated");
       history.goBack();
     } else {
@@ -143,10 +120,29 @@ const EditCandidate = (props) => {
     }
   };
 
-  useEffect(() => {
-    let id = JSON.parse(localStorage.getItem("userSelected"));
-    var res = getUser(id);
-  }, []);
+  const deleteLocation = (location) => {
+    setLocationArray((prevState) => {
+      return prevState.filter((loc) => {
+        return loc !== location;
+      });
+    });
+  };
+
+  const deleteSkill = (enteredSkill) => {
+    setSkillArray((prevState) => {
+      return prevState.filter((skill) => {
+        return skill !== enteredSkill;
+      });
+    });
+  };
+
+  const deleteLanguage = (enteredLang) => {
+    setLanguageArray((prevState) => {
+      return prevState.filter((lang) => {
+        return lang !== enteredLang;
+      });
+    });
+  };
 
   return (
     <div>
@@ -446,31 +442,41 @@ const EditCandidate = (props) => {
                                       type='text'
                                       class='form-control form-control-sm'
                                       id='inlineFormInputGroup1'
+                                      value={skillVal}
+                                      onChange={(e) => {
+                                        setSkillVal(e.target.value);
+                                      }}
                                       placeholder='Add user'
-                                      value='sample'
                                       disabled={!edit}
                                     />
                                   </div>
-                                  <button
-                                    type='submit'
-                                    class='btn btn-success btn-sm'>
-                                    Submit
-                                  </button>
-                                  <button
-                                    data-repeater-delete
-                                    type='button'
-                                    class='btn btn-danger btn-sm icon-btn ml-2'>
-                                    <i class='mdi mdi-delete'></i>
-                                  </button>
                                 </div>
                               </div>
                               <button
                                 data-repeater-create
                                 type='button'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (skillVal === "") {
+                                    return;
+                                  }
+                                  setSkillArray((prevState) => {
+                                    return [...prevState, skillVal];
+                                  });
+                                  setSkillVal("");
+                                }}
                                 class='btn btn-info btn-sm icon-btn ml-2 mb-2'>
                                 <i class='mdi mdi-plus'></i>
                               </button>
                             </form>
+                            {skillArray &&
+                              skillArray.map((skill) => (
+                                <InputArray
+                                  key={Math.random()}
+                                  text={skill}
+                                  onDelete={deleteSkill}
+                                />
+                              ))}
                           </div>
                         </div>
                       </div>
@@ -494,31 +500,41 @@ const EditCandidate = (props) => {
                                       type='text'
                                       class='form-control form-control-sm'
                                       id='inlineFormInputGroup1'
+                                      onChange={(e) => {
+                                        setWorkLocationVal(e.target.value);
+                                      }}
+                                      value={workLocationVal}
                                       placeholder='Add user'
-                                      value='sample'
                                       disabled={!edit}
                                     />
                                   </div>
-                                  <button
-                                    type='submit'
-                                    class='btn btn-success btn-sm'>
-                                    Submit
-                                  </button>
-                                  <button
-                                    data-repeater-delete
-                                    type='button'
-                                    class='btn btn-danger btn-sm icon-btn ml-2'>
-                                    <i class='mdi mdi-delete'></i>
-                                  </button>
                                 </div>
                               </div>
                               <button
                                 data-repeater-create
                                 type='button'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (workLocationVal === "") {
+                                    return;
+                                  }
+                                  setLocationArray((prevState) => {
+                                    return [...prevState, workLocationVal];
+                                  });
+                                  setWorkLocationVal("");
+                                }}
                                 class='btn btn-info btn-sm icon-btn ml-2 mb-2'>
                                 <i class='mdi mdi-plus'></i>
                               </button>
                             </form>
+                            {workLocationArray &&
+                              workLocationArray.map((loc) => (
+                                <InputArray
+                                  key={Math.random()}
+                                  text={loc}
+                                  onDelete={deleteLocation}
+                                />
+                              ))}
                           </div>
                         </div>
                       </div>
@@ -542,40 +558,50 @@ const EditCandidate = (props) => {
                                       type='text'
                                       class='form-control form-control-sm'
                                       id='inlineFormInputGroup1'
+                                      value={langVal}
                                       placeholder='Add user'
-                                      value='sample'
-                                      disabled={!edit}
+                                      onChange={(e) => {
+                                        setLangval(e.target.value);
+                                      }}
                                     />
                                   </div>
-                                  <button
-                                    type='submit'
-                                    class='btn btn-success btn-sm'>
-                                    Submit
-                                  </button>
-                                  <button
-                                    data-repeater-delete
-                                    type='button'
-                                    class='btn btn-danger btn-sm icon-btn ml-2'>
-                                    <i class='mdi mdi-delete'></i>
-                                  </button>
                                 </div>
                               </div>
                               <button
                                 data-repeater-create
                                 type='button'
-                                class='btn btn-info btn-sm icon-btn ml-2 mb-2'>
+                                class='btn btn-info btn-sm icon-btn ml-2 mb-2'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (langVal === "") {
+                                    return;
+                                  }
+                                  setLanguageArray((prevState) => {
+                                    return [...prevState, langVal];
+                                  });
+                                  setLangval("");
+                                }}>
                                 <i class='mdi mdi-plus'></i>
                               </button>
                             </form>
+                            {languageArray &&
+                              languageArray.map((lang) => (
+                                <InputArray
+                                  key={Math.random()}
+                                  text={lang}
+                                  onDelete={deleteLanguage}
+                                />
+                              ))}
                           </div>
                         </div>
                       </div>
                     </div>
                     <button
-                      type='button'
+                      type='submit'
                       class='btn btn-primary mr-2'
-                      onClick={() => {
-                        dataSubmit();
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dataSubmit(user);
                       }}>
                       Submit
                     </button>

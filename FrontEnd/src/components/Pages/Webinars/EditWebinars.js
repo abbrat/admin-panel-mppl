@@ -36,30 +36,31 @@ const EditWebinars = (props) => {
     webinar.aboutInstructor || ""
   );
   const [designation, setDesignation] = useState(webinar.designation || "");
-  const [companies, setCompanies] = useState([]);
+  // const [companies, setCompanies] = useState([]);
+  // const [companies, setCompanies] = useState([]);
   const [CompanyName, setCompanyName] = useState("");
-  const getCompanies = async () => {
-    let arr = [];
-    try {
-      const res = await axios.get("http://localhost:5000/api/company/all");
-      if (res.data.length > 0) {
-        // setCompanies(res.data);
-        arr = res.data;
-      }
-      let arr2 = [];
-      arr.map((company) => {
-        arr2.push({
-          value: company.CompanyName,
-          label: company.CompanyName,
-          id: company._id,
-        });
-      });
-      setCompanies(arr2);
-      // console.log(companies);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  // const getCompanies = async () => {
+  //   let arr = [];
+  //   try {
+  //     const res = await axios.get("http://localhost:5000/api/company/all");
+  //     if (res.data.length > 0) {
+  //       // setCompanies(res.data);
+  //       arr = res.data;
+  //     }
+  //     let arr2 = [];
+  //     arr.map((company) => {
+  //       arr2.push({
+  //         value: company.CompanyName,
+  //         label: company.CompanyName,
+  //         id: company._id,
+  //       });
+  //     });
+  //     setCompanies(arr2);
+  //     // console.log(companies);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
 
   const getCompanydetails = async (id) => {
     try {
@@ -78,9 +79,9 @@ const EditWebinars = (props) => {
       console.log(error.message);
     }
   };
-  useEffect(() => {
-    getCompanies();
-  }, []);
+  // useEffect(() => {
+  //   getCompanies();
+  // }, []);
   return (
     <div>
       <div class='main-panel'>
@@ -168,26 +169,19 @@ const EditWebinars = (props) => {
                       <div class='col-md-6'>
                         <div class='form-group row'>
                           <label class='col-sm-3 col-form-label'>
-                            Company Name
+                            Category
                           </label>
                           <div class='col-sm-9'>
-                            {/* <select
-                                    onChange={(e) => {
-                                      setCompanyName(e.target.value);
-                                    }}
-                                    class="form-control"
-                                  >
-                                    {companies.length == 0 ? (
-                                      <option>No Companies</option>
-                                    ) : (
-                                      companies.map((company) => {
-                                        return (
-                                          <option>{company.CompanyName}</option>
-                                        );
-                                      })
-                                    )}
-                                  </select> */}
-                            <Select
+                            <input
+                              type='text'
+                              class='form-control'
+                              value={webinarType}
+                              onChange={(e) => {
+                                setWebinarType(e.target.value);
+                              }}
+                              disabled={!edit}
+                            />
+                            {/*<Select 
                               options={companies}
                               onChange={(e) => {
                                 getCompanydetails(e.id);
@@ -195,7 +189,7 @@ const EditWebinars = (props) => {
                               }}
                               disabled={!edit}
                               placeholder='Company'
-                            />
+                            /> */}
                           </div>
                         </div>
                       </div>
@@ -240,6 +234,7 @@ const EditWebinars = (props) => {
                           </label>
                           <input
                             class='form-control'
+                            type='date'
                             data-inputmask="'alias': 'datetime'"
                             data-inputmask-inputformat='dd/mm/yyyy HH:MM:ss'
                             value={webinarDate}
@@ -357,6 +352,7 @@ const EditWebinars = (props) => {
                               webinarLink,
                               webinarTitle,
                               webinarTime,
+                              webinarType,
                             },
                             webinar._id
                           )

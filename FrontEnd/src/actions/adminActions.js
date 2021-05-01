@@ -87,8 +87,7 @@ export const createJob = async (formData) => {
       },
     };
     const res = await axios.post(URL + "/api/jobs", formData, config);
-    if (res.data) {
-      // console.log(res.data);
+    if (res.data.msg === "Job Created") {
       return true;
     }
   } catch (error) {
@@ -97,8 +96,7 @@ export const createJob = async (formData) => {
   }
 };
 
-export const approveJobs = (id) => async (dispatch) => {
-  // console.log("function approve jobs  working");
+export const approveJobs = async (id) => {
   try {
     const config = {
       headers: {
@@ -108,12 +106,13 @@ export const approveJobs = (id) => async (dispatch) => {
     const res = await axios.get(URL + "/api/jobs/approve/" + id, config);
     console.log(res.data);
     if (res.data) {
-      makeToast("success", "Success");
+      makeToast("success", "Job Approved");
+      return true;
     }
-    dispatch({ type: APPROVE_JOBS });
   } catch (error) {
     makeToast("error", error.message);
     console.log(error.message);
+    return false;
   }
 };
 
@@ -128,26 +127,25 @@ export const deleteJobByID = async (id) => {
 
     if (res.data === "Job deleted.") {
       makeToast("success", "Success");
-      return res.data;
+      return true;
     }
   } catch (error) {
     console.log(error.message);
     makeToast("error", "Success");
+    return false;
   }
 };
 
 export const getAllJobs = async () => {
   try {
-    if (role.includes("All") || role.includes("Jobs")) {
-      const res = await axios.get(URL + "/api/jobs/all");
-      return res.data;
-    }
+    const res = await axios.get(URL + "/api/jobs/all");
+    return res.data;
   } catch (error) {
     console.log(error.message);
   }
 };
 
-export const getUnApprovedJobs = () => async (dispatch) => {
+export const getUnApprovedJobs = async () => {
   // console.log("function get unapproved jobs working");
   try {
     const config = {
@@ -156,14 +154,14 @@ export const getUnApprovedJobs = () => async (dispatch) => {
       },
     };
     const res = await axios.get(URL + "/api/jobs/unApprovedJobs", config);
-    dispatch({ type: LOAD_UNAPPROVED_JOBS, payload: res.data });
+    console.log(res.data);
+    return res.data;
   } catch (error) {
     console.log(error.message);
   }
 };
 
 export const updateJobById = async (formData, id) => {
-  console.log(formData);
   try {
     const config = {
       headers: {
@@ -338,7 +336,8 @@ export const updateUserById = async (formData, id) => {
       formData,
       config
     );
-    if (res.data) {
+    if (res.data.msg === "User Updated") {
+      console.log("fdsfs");
       return true;
     }
   } catch (error) {
@@ -347,39 +346,53 @@ export const updateUserById = async (formData, id) => {
   }
 };
 
-export const banAdmin = (id) => async () => {
+export const banAdminById = async (id) => {
   try {
     const res = await axios.get(URL + "/api/admin/banAccount/" + id);
-    console.log(res.data);
+    if (res.data.msg === "Admin Blocked!") {
+      makeToast("success", "Success");
+      return true;
+    }
   } catch (error) {
     console.log(error.message);
+    makeToast("error", error.message);
+    return false;
   }
 };
 
-export const getAdmins = () => async (dispatch) => {
+export const getAdmins = async () => {
   try {
     const res = await axios.get(URL + "/api/admin/allAdmins");
-    dispatch({ type: GET_ADMINS, payload: res.data });
+    return res.data;
   } catch (error) {
     console.log(error.message);
   }
 };
 
-export const getBannedAdmins = () => async (dispatch) => {
+export const getBannedAdmins = async () => {
   try {
     const res = await axios.get(URL + "/api/admin/bannedAdmins");
-    dispatch({ type: GET_ADMINS, payload: res.data });
+
+    if (res.data.admins) {
+      console.log(res.data);
+      return res.data.admins;
+    }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-export const unBanAdmin = (id) => async () => {
+export const unBanAdmin = async (id) => {
   try {
     const res = await axios.get(URL + "/api/admin/unBanAccount/" + id);
-    console.log(res.data);
+    if (res.data.msg === "Admin unBlocked!") {
+      console.log("Block", res.data.msg);
+      makeToast("success", "Success");
+      return true;
+    }
   } catch (error) {
     console.log(error.message);
+    return false;
   }
 };
 
@@ -471,10 +484,12 @@ export const banConsultantById = async (id) => {
     const res = await axios.get(URL + "/api/consultant/banConsultant/" + id);
     if (res.data.msg === "Consultant Banned!") {
       makeToast("success", "Success");
+      return true;
     }
   } catch (error) {
     console.log(error.message);
     makeToast("error", error.message);
+    return false;
   }
 };
 
@@ -491,7 +506,8 @@ export const createConsultant = async (formData) => {
       formData,
       config
     );
-    if (res.data) {
+    if (res.status === 200) {
+      console.log(res);
       return true;
     }
   } catch (error) {
@@ -500,19 +516,24 @@ export const createConsultant = async (formData) => {
   }
 };
 
-export const getBannedConsultants = () => async (dispatch) => {
+export const getBannedConsultants = async () => {
   try {
     const res = await axios.get(URL + "/api/consultant/bannedConsultants");
-    dispatch({ type: GET_CONSULTANTS, payload: res.data });
+    console.log(res.data);
+    if (res.data.consultants) {
+      return res.data.consultants;
+    }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-export const getConsultants = () => async (dispatch) => {
+export const getConsultants = async () => {
   try {
     const res = await axios.get(URL + "/api/consultant");
-    dispatch({ type: GET_CONSULTANTS, payload: res.data });
+    if (res.status === 200) {
+      return res.data;
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -523,10 +544,12 @@ export const unBanConsultantById = async (id) => {
     const res = await axios.get(URL + "/api/consultant/unBanConsultant/" + id);
     if (res.data.msg === "Consultant unBanned!") {
       makeToast("success", "Success");
+      return true;
     }
   } catch (error) {
     console.log(error.message);
     makeToast("error", error.message);
+    return false;
   }
 };
 
@@ -594,10 +617,10 @@ export const deleteWebinarsById = async (id) => {
   }
 };
 
-export const getAllWebinars = () => async (dispatch) => {
+export const getAllWebinars = async () => {
   try {
     const res = await axios.get(URL + "/api/webinar/all");
-    dispatch({ type: GET_ALL_WEBINARS, payload: res.data });
+    return res.data;
   } catch (error) {
     console.log(error.message);
   }

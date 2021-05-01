@@ -72,7 +72,6 @@ const useSortableData = (items, config = null) => {
 
 const Webinars = (props) => {
   const [arr, setArr] = useState([]);
-  // const { items, requestSort, sortCoonfig } = useSortableData(arr);
   const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
   const [page, setPage] = useState();
@@ -86,6 +85,8 @@ const Webinars = (props) => {
   const [dateFilter, setDateFilter] = useState("");
   const [timeFilter, setTimeFilter] = useState("");
 
+  const [webinars, setWebinars] = useState([]);
+
   const { fItems, requestFilter, filterConfig } = useFilterData(arr);
 
   const history = useHistory();
@@ -94,12 +95,35 @@ const Webinars = (props) => {
       const res = await axios.get(
         "http://localhost:5000/api/webinar/users/" + pageNo + "/" + perPage
       );
-      setArr(res.data.users);
-      setPage(Math.ceil(res.data.length / 10));
+      console.log(res.data.user);
+      setArr(res.data.user);
+      // setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
     }
   };
+
+  const gettingAllWebinars = async () => {
+    const webinars = await getAllWebinars();
+    await setWebinars(webinars);
+  };
+
+  const deleteWebinar = async (id) => {
+    const deletedWebinar = await deleteWebinarsById(id);
+    console.log(deletedWebinar);
+    if (deletedWebinar) {
+      setArr((prevState) => {
+        return prevState.filter((webinar) => {
+          return webinar._id !== id;
+        });
+      });
+    }
+  };
+
+  useEffect(() => {
+    gettingAllWebinars();
+  }, []);
+
   useEffect(() => {
     getWebinars();
   }, [pageNo]);
@@ -169,12 +193,14 @@ const Webinars = (props) => {
                   <div className='table-responsive'>
                     <Pagination
                       className='my-3'
-                      siblingCount={1}
+                      siblingCount={2}
                       boundaryCount={1}
                       variant='outlined'
                       shape='rounded'
-                      count={page}
+                      count={Math.ceil(webinars && webinars.length / 10)}
                       onChange={(e) => {
+                        console.log("check", e.target.textContent);
+                        console.log("pageNo", pageNo);
                         if (e.target.textContent == "") {
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
@@ -182,11 +208,11 @@ const Webinars = (props) => {
                           getWebinars();
                         } else {
                           setPageNo(e.target.textContent);
-                          console.log("hi");
                           getWebinars();
                         }
                       }}
                     />
+
                     <table className='table'>
                       <thead>
                         <tr>
@@ -304,7 +330,7 @@ const Webinars = (props) => {
                                         paddingRight: "10px",
                                       }}
                                       onClick={() => {
-                                        deleteWebinarsById(webinar._id);
+                                        deleteWebinar(webinar._id);
                                       }}>
                                       Delete
                                     </button>

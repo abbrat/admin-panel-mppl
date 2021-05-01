@@ -18,21 +18,45 @@ const Consultants = (props) => {
   const [pageNo, setPageNo] = useState("1");
   const [page, setPage] = useState();
 
+  const [consultants, setConsultants] = useState([]);
+
   const getAllConsultants = async () => {
     try {
       const res = await axios.get(
         "http://localhost:5000/api/consultant/users/" + pageNo + "/" + perPage
       );
-      console.log(res.data.users);
-      setArr(res.data.users);
-      setPage(Math.ceil(res.data.length / 10));
+      setArr(res.data.consultants);
+      // setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
     }
   };
+
+  const gettingAllConsultants = async () => {
+    const candidates = await getConsultants();
+    await setConsultants(candidates);
+  };
+
+  const banConsultant = async (id) => {
+    const banCandidate = await banConsultantById(id);
+    console.log(banCandidate);
+    if (banCandidate) {
+      setArr((prevState) => {
+        return prevState.filter((user) => {
+          return user._id !== id;
+        });
+      });
+    }
+  };
+
+  useEffect(() => {
+    gettingAllConsultants();
+  }, []);
+
   useEffect(() => {
     getAllConsultants();
   }, [pageNo]);
+
   return (
     <div>
       <div class='main-panel'>
@@ -49,9 +73,9 @@ const Consultants = (props) => {
                       boundaryCount={1}
                       variant='outlined'
                       shape='rounded'
-                      count={page}
+                      count={Math.ceil(consultants && consultants.length / 10)}
                       onChange={(e) => {
-                        if (e.target.textContent == "") {
+                        if (e.target.textContent === "") {
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
 
@@ -75,14 +99,15 @@ const Consultants = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {arr.map((consultant) => {
-                          return (
-                            <tr>
-                              <td>{consultant.name}</td>
-                              <td>{consultant.email}</td>
-                              <td>{consultant.sector}</td>
-                              <td>{consultant.experience}</td>
-                              {/* <td>
+                        {arr &&
+                          arr.map((consultant) => {
+                            return (
+                              <tr>
+                                <td>{consultant.name}</td>
+                                <td>{consultant.email}</td>
+                                <td>{consultant.sector}</td>
+                                <td>{consultant.experience}</td>
+                                {/* <td>
                                       <button
                                         class="btn btn-primary btn-rounded"
                                         style={{
@@ -94,42 +119,46 @@ const Consultants = (props) => {
                                         View
                                       </button>
                                     </td> */}
-                              <td>
-                                <a
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "consultant",
-                                      JSON.stringify(consultant)
-                                    );
-                                    history.push("/edit-consultant");
-                                  }}>
+                                <td>
+                                  <a
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "consultant",
+                                        JSON.stringify(consultant)
+                                      );
+                                      history.push("/edit-consultant");
+                                    }}>
+                                    <button
+                                      class='btn  btn-rounded btn-dark'
+                                      style={{
+                                        padding: "9px",
+                                        marginRight: "5px",
+                                        paddingLeft: "15px",
+                                        paddingRight: "15px",
+                                      }}>
+                                      Edit
+                                    </button>
+                                  </a>
                                   <button
-                                    class='btn  btn-rounded btn-dark'
+                                    class='btn  btn-rounded btn-danger'
+                                    disabled={consultant.banAccount}
                                     style={{
                                       padding: "9px",
-                                      marginRight: "5px",
-                                      paddingLeft: "15px",
-                                      paddingRight: "15px",
+                                      paddingLeft: "10px",
+                                      paddingRight: "10px",
+                                      backgroundColor: consultant.banAccount
+                                        ? "green"
+                                        : "red",
+                                    }}
+                                    onClick={() => {
+                                      banConsultant(consultant._id);
                                     }}>
-                                    Edit
+                                    {consultant.banAccount ? "Banned" : "Block"}
                                   </button>
-                                </a>
-                                <button
-                                  class='btn  btn-rounded btn-danger'
-                                  style={{
-                                    padding: "9px",
-                                    paddingLeft: "10px",
-                                    paddingRight: "10px",
-                                  }}
-                                  onClick={() => {
-                                    banConsultantById(consultant._id);
-                                  }}>
-                                  Block
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
+                                </td>
+                              </tr>
+                            );
+                          })}
                       </tbody>
                     </table>
                   </div>

@@ -14,11 +14,11 @@ const AddWebinar = (props) => {
   const history = useHistory();
   const [saved, setSaved] = useState();
   const [startDate, setStartDate] = useState(new Date());
-  const [title, setTitle] = useState("");
-  const [time, setTime] = useState(new Date());
-  const [date, setDate] = useState(new Date());
+  // const [title, setTitle] = useState("");
+  // const [time, setTime] = useState(new Date());
+  // const [date, setDate] = useState(new Date());
   const [webinarLink, setWebinarLink] = useState("");
-  const [category, setCategory] = useState("");
+  // const [category, setCategory] = useState("");
   const [instructorDesignation, setInstructorDesignation] = useState("");
   const [webinarTitle, setWebinarTitle] = useState("");
   const [webinarType, setWebinarType] = useState("");
@@ -30,6 +30,49 @@ const AddWebinar = (props) => {
   const [instructorName, setInstructorName] = useState("");
   const [aboutInstructor, setaboutInstructor] = useState("");
   const [designation, setDesignation] = useState("");
+
+  const submitHandler = async () => {
+    if (
+      webinarTitle === "" ||
+      webinarType === "" ||
+      webinarDate === "" ||
+      webinarDescription === "" ||
+      webinarAudience === "" ||
+      webinarLink === "" ||
+      instructorName === "" ||
+      instructorDesignation === "" ||
+      aboutInstructor === "" ||
+      designation === ""
+    ) {
+      return makeToast("error", "Please add all the fields");
+    }
+
+    console.log(webinarDate);
+
+    var webinarInstructor = {
+      instructorName: instructorName,
+      designation: designation,
+      aboutInstructor: aboutInstructor,
+    };
+    setSaved(
+      await createWebinars({
+        webinarAudience,
+        webinarDate,
+        webinarDescription,
+        webinarInstructor,
+        webinarLink,
+        webinarType,
+        webinarTitle,
+        webinarTime,
+      })
+    );
+    if (saved) {
+      history.push("/webinars");
+    } else {
+      history.push("/webinars");
+    }
+  };
+
   return (
     <div>
       <div class='main-panel'>
@@ -49,15 +92,15 @@ const AddWebinar = (props) => {
                             <input
                               type='text'
                               class='form-control'
-                              value={title}
+                              value={webinarTitle}
                               onChange={(e) => {
-                                setTitle(e.target.value);
+                                setWebinarTitle(e.target.value);
                               }}
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
+                      {/* <div class='col-md-6'>
                         <div class='form-group row'>
                           <label
                             class='col-sm-3'
@@ -71,7 +114,7 @@ const AddWebinar = (props) => {
                             <option>Sample Company</option>
                           </select>
                         </div>
-                      </div>
+                            </div> */}
                       <div class='col-md-6'>
                         <div class='form-group row'>
                           <label class='col-sm-3 col-form-label'>
@@ -81,9 +124,9 @@ const AddWebinar = (props) => {
                             <input
                               type='text'
                               class='form-control'
-                              value={category}
+                              value={webinarType}
                               onChange={(e) => {
-                                setCategory(e.target.value);
+                                setWebinarType(e.target.value);
                               }}
                             />
                           </div>
@@ -99,9 +142,9 @@ const AddWebinar = (props) => {
                             <input
                               type='date'
                               class='form-control'
-                              value={date}
+                              value={webinarDate}
                               onChange={(e) => {
-                                setDate(e.target.value);
+                                setWebinarDate(e.target.value);
                               }}
                             />
                             {/* <span class="input-group-addon input-group-append border-left">
@@ -120,9 +163,9 @@ const AddWebinar = (props) => {
                             <input
                               type='time'
                               class='form-control'
-                              value={time}
+                              value={webinarTime}
                               onChange={(e) => {
-                                setTime(e.target.value);
+                                setWebinarTime(e.target.value);
                               }}
                             />
                             {/* <span class="input-group-addon input-group-append border-left">
@@ -278,29 +321,7 @@ const AddWebinar = (props) => {
                     </div>
                     <button
                       type='button'
-                      onClick={async () => {
-                        var webinarInstructor = {
-                          instructorName: instructorName,
-                          designation: designation,
-                          aboutInstructor: aboutInstructor,
-                        };
-                        setSaved(
-                          await createWebinars({
-                            webinarAudience,
-                            webinarDate,
-                            webinarDescription,
-                            webinarInstructor,
-                            webinarLink,
-                            webinarTitle,
-                            webinarTime,
-                          })
-                        );
-                        if (saved) {
-                          history.push("/webinars");
-                        } else {
-                          history.push("/webinars");
-                        }
-                      }}
+                      onClick={submitHandler}
                       class='btn btn-primary mr-2'>
                       Submit
                     </button>

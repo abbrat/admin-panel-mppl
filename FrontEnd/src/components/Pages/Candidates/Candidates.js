@@ -74,7 +74,7 @@ const Candidates = () => {
       const res = await axios.get(
         "http://localhost:5000/api/user/users/" + pageNo + "/" + perPage
       );
-
+      console.log(res.data);
       setCandidatesArr(res.data);
     } catch (error) {
       console.log(error.message);
@@ -106,7 +106,7 @@ const Candidates = () => {
     const banCandidate = await banUserById(id);
     console.log(banCandidate);
     if (banCandidate) {
-      setCandidates((prevState) => {
+      setCandidatesArr((prevState) => {
         return prevState.filter((user) => {
           return user._id !== id;
         });
@@ -192,6 +192,7 @@ const Candidates = () => {
                       onChange={(e) => {
                         console.log(e.target.textContent);
                         if (e.target.textContent === "") {
+                          console.log(e.target.textContent);
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
                           getUsers();
