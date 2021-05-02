@@ -12,7 +12,7 @@ const useFilterData = (fItems, config = null) => {
   const [filterConfig, setFilterConfig] = useState(config);
 
   const filterItems = useMemo(() => {
-    let filterableItems = [...fItems];
+    let filterableItems = fItems && [...fItems];
     if (filterConfig !== null) {
       filterableItems = filterableItems.filter((company) => {
         if (
@@ -37,7 +37,7 @@ const useSortableData = (items, config = null) => {
   const [sortCoonfig, setSortConfig] = useState(config);
 
   const sortedItems = useMemo(() => {
-    let sortableItems = [...items];
+    let sortableItems = items && [...items];
     if (sortCoonfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortCoonfig.key] < b[sortCoonfig.key]) {
@@ -86,21 +86,24 @@ const Employers = (props) => {
       const res = await axios.get(
         "http://localhost:5000/api/company/users/" + pageNo + "/" + perPage
       );
-      setArr(res.data.users);
+      console.log(res);
+      await setArr(res.data.users);
       setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
     }
   };
   useEffect(() => {
-    // props.getAllCompanies();
     getCompanies();
-    if (nameFilter !== "" || emailFilter !== "" || website !== "") {
-      setFilter(false);
-    } else {
-      setFilter(true);
-    }
   }, [pageNo]);
+
+  useEffect(() => {
+    if (nameFilter !== "" || emailFilter !== "" || website !== "") {
+      setFilter(true);
+    } else {
+      setFilter(false);
+    }
+  }, [emailFilter, nameFilter, website]);
 
   return (
     <div>
@@ -173,14 +176,13 @@ const Employers = (props) => {
                       shape='rounded'
                       count={page}
                       onChange={(e) => {
-                        if (e.target.textContent == "") {
+                        if (e.target.textContent === "") {
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
 
                           getCompanies();
                         } else {
                           setPageNo(e.target.textContent);
-                          console.log("hi");
                           getCompanies();
                         }
                       }}
@@ -314,15 +316,13 @@ const Employers = (props) => {
                                 </td>
                                 <td>
                                   <button
-                                    class='btn btn-dark btn-rounded'
+                                    class='btn  btn-rounded btn-dark'
                                     style={{
-                                      padding: "10px",
+                                      padding: "9px",
+                                      marginRight: "5px",
                                       paddingLeft: "15px",
                                       paddingRight: "15px",
-                                    }}>
-                                    View
-                                  </button>
-                                  <a
+                                    }}
                                     onClick={() => {
                                       localStorage.setItem(
                                         "company",
@@ -330,17 +330,8 @@ const Employers = (props) => {
                                       );
                                       history.push("/edit-employer");
                                     }}>
-                                    <button
-                                      class='btn  btn-rounded btn-dark'
-                                      style={{
-                                        padding: "9px",
-                                        marginRight: "5px",
-                                        paddingLeft: "15px",
-                                        paddingRight: "15px",
-                                      }}>
-                                      Edit
-                                    </button>
-                                  </a>
+                                    Edit
+                                  </button>
                                 </td>
                               </tr>
                             );

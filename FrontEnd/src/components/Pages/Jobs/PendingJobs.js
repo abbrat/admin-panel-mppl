@@ -21,7 +21,9 @@ const PendingJobs = () => {
 
   const getAllUnApprovedJobs = async () => {
     const jobs = await getUnApprovedJobs();
-    await setJobs(jobs);
+    if (jobs) {
+      await setJobs(jobs);
+    }
   };
 
   const approveJobsById = async (id) => {

@@ -75,7 +75,7 @@ const Candidates = () => {
         "http://localhost:5000/api/user/users/" + pageNo + "/" + perPage
       );
       console.log(res.data);
-      setCandidatesArr(res.data);
+      await setCandidatesArr(res.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -84,9 +84,6 @@ const Candidates = () => {
   const history = useHistory();
   const { fItems, requestFilter, filterConfig } = useFilterData(candidatesArr);
 
-  // const [page, setPage] = useState(
-  //   Math.ceil(props.users && props.users.length / 10)
-  // );
   const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
   const [nameFilter, setNameFilter] = useState("");
@@ -111,6 +108,8 @@ const Candidates = () => {
           return user._id !== id;
         });
       });
+      await gettingAllCandidates();
+      await getUsers();
     }
   };
 
@@ -120,13 +119,16 @@ const Candidates = () => {
 
   useEffect(() => {
     getUsers();
-
-    if (nameFilter !== "" || emailFilter !== "" || numberFilter !== "") {
-      setFilter(false);
-    } else {
-      setFilter(true);
-    }
   }, [pageNo]);
+
+  useEffect(() => {
+    if (nameFilter !== "" || emailFilter !== "" || numberFilter !== "") {
+      setFilter(true);
+    } else {
+      setFilter(false);
+    }
+  }, [emailFilter, nameFilter, numberFilter]);
+
   return (
     <div>
       <div className='main-panel'>
@@ -195,10 +197,8 @@ const Candidates = () => {
                           console.log(e.target.textContent);
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
-                          getUsers();
                         } else {
                           setPageNo(e.target.textContent);
-                          getUsers();
                         }
                       }}
                     />
@@ -254,7 +254,7 @@ const Candidates = () => {
                           ) : (
                             items.map((user) => {
                               return (
-                                <tr>
+                                <tr key={Math.random()}>
                                   <td>{user.name}</td>
                                   <td>{user.email}</td>
                                   <td>{user.number}</td>
@@ -312,7 +312,7 @@ const Candidates = () => {
                         ) : (
                           fItems.map((user) => {
                             return (
-                              <tr>
+                              <tr key={Math.random()}>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
                                 <td>{user.number}</td>
@@ -361,7 +361,7 @@ const Candidates = () => {
                                       paddingRight: "10px",
                                     }}
                                     onClick={() => {
-                                      banUserById(user._id);
+                                      banUser(user._id);
                                     }}>
                                     Block
                                   </button>

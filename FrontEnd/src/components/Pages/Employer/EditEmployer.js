@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
-import { createCompany } from "../../../actions/adminActions";
+import { updateCompanyById } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import makeToast from "../../../Toaster";
+import InputArray from "../Candidates/InputArray";
 
 const EditEmployer = (props) => {
   const [edit, setEdit] = useState(false);
   const [company, setCompany] = useState(
     JSON.parse(localStorage.getItem("company"))
   );
-  // useEffect(() => {
-  //   setCompany(JSON.parse(localStorage.getItem("company")));
-  // });
+
+  console.log(company.OtherOffices);
+
+  const [locationArray, setLocationArray] = useState(
+    company.OtherOffices || []
+  );
+
+  const [locationVal, setLocationVal] = useState("");
 
   const [CompanyName, setCompanyName] = useState(company.CompanyName || "");
   const [CompanyEmail, setCompanyEmail] = useState(company.CompanyEmail || "");
@@ -29,62 +35,47 @@ const EditEmployer = (props) => {
   const [HeadOffice, setHeadOffice] = useState(company.HeadOffice || "");
   const [Latitude, setLatitude] = useState(company.Latitude || "");
   const [Longitude, setLongitude] = useState(company.Longitude || "");
-  const [Locations, setLocations] = useState(company.Locations || "");
   const [CIN, setCIN] = useState(company.CIN);
   const history = useHistory();
   const [saved, setSaved] = useState();
-  const [inputBox, setInputBox] = useState(
-    <div class='col-sm-9'>
-      <form class='form-inline repeater'>
-        <div data-repeater-list='group-a'>
-          <div data-repeater-item class='d-flex mb-2'>
-            <label class='sr-only' for='inlineFormInputGroup1'>
-              Users
-            </label>
-            <div class='input-group mb-2 mr-sm-2 mb-sm-0'>
-              <div class='input-group-prepend'>
-                <span class='input-group-text'>@</span>
-              </div>
-              <input
-                type='text'
-                class='form-control form-control-sm'
-                id='inlineFormInputGroup1'
-                placeholder='Add user'
-                value={Locations}
-                onChange={(e) => {
-                  setLocations(e.target.value);
-                }}
-              />
-            </div>
-            <button type='submit' class='btn btn-success btn-sm'>
-              Submit
-            </button>
-            <button
-              data-repeater-delete
-              type='button'
-              class='btn btn-danger btn-sm icon-btn ml-2'>
-              <i class='mdi mdi-delete'></i>
-            </button>
-          </div>
-        </div>
-        <button
-          data-repeater-create
-          type='button'
-          onClick={() => {
-            let arr = [];
-            arr = inputArr;
-            arr.push(inputBox);
-            setInputArr(arr);
-            console.log(inputArr);
-          }}
-          class='btn btn-info btn-sm icon-btn ml-2 mb-2'>
-          <i class='mdi mdi-plus'></i>
-        </button>
-      </form>
-    </div>
-  );
+  const [inputBox, setInputBox] = useState();
+  const [Logo, setLogo] = useState(company.Logo || "");
 
-  const [inputArr, setInputArr] = useState([]);
+  const uploadFile = (e) => {
+    if (e.target.files[0] == null) {
+      console.log("Logo Not Uploaded");
+    } else {
+      setLogo(e.target.files[0]);
+    }
+  };
+
+  const deleteLocation = (enteredSkill) => {
+    setLocationArray((prevState) => {
+      return prevState.filter((skill) => {
+        return skill !== enteredSkill;
+      });
+    });
+  };
+
+  const submitHandler = async () => {
+    const formData = new FormData();
+    formData.append("CompanyName", CompanyName);
+    formData.append("CompanyDescription", CompanyDescription);
+    formData.append("CIN", CIN);
+    formData.append("JoiningDate", JoiningDate);
+    formData.append("HeadOffice", HeadOffice);
+    formData.append("Website", Website);
+    formData.append("Validity", Validity);
+    formData.append("Logo", Logo);
+    formData.append("OtherOffices", locationArray);
+    console.log(FormData);
+    setSaved(await updateCompanyById(formData, company._id));
+    if (saved) {
+      history.push("/employers");
+    } else {
+      history.push("/employers");
+    }
+  };
 
   return (
     <div>
@@ -162,11 +153,9 @@ const EditEmployer = (props) => {
                           <label class='col-sm-3 col-form-label'>
                             Joining Date
                           </label>
-                          <div
-                            id='datepicker-popup'
-                            class='input-group date datepicker col-sm-9'>
+                          <div class='input-group date datepicker col-sm-9'>
                             <input
-                              type='text'
+                              type='date'
                               class='form-control'
                               value={JoiningDate}
                               onChange={(e) => {
@@ -174,9 +163,6 @@ const EditEmployer = (props) => {
                               }}
                               disabled={!edit}
                             />
-                            <span class='input-group-addon input-group-append border-left'>
-                              <span class='mdi mdi-calendar input-group-text'></span>
-                            </span>
                           </div>
                         </div>
                       </div>
@@ -241,9 +227,9 @@ const EditEmployer = (props) => {
                           </label>
                           <div
                             id='datepicker-popup'
-                            class='input-group date datepicker col-sm-9'>
+                            class='input-group col-sm-9'>
                             <input
-                              type='text'
+                              type='date'
                               class='form-control'
                               value='sample'
                               value={Validity}
@@ -252,9 +238,6 @@ const EditEmployer = (props) => {
                               }}
                               disabled={!edit}
                             />
-                            <span class='input-group-addon input-group-append border-left'>
-                              <span class='mdi mdi-calendar input-group-text'></span>
-                            </span>
                           </div>
                         </div>
                       </div>
@@ -279,25 +262,69 @@ const EditEmployer = (props) => {
                           </div>
                         </div>
                       </div>
+
                       <div class='col-md-6'>
                         <div class='form-group row'>
                           <label
                             class='col-sm-3'
-                            for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
-                            Locations
+                            Other Location
                           </label>
-                          {inputArr.length != 0
-                            ? inputArr.map((arr) => {
-                                return <>{arr}</>;
-                              })
-                            : inputBox}
+                          <div class='col-sm-9'>
+                            <form class='form-inline repeater'>
+                              <div data-repeater-list='group-a'>
+                                <div data-repeater-item class='d-flex mb-2'>
+                                  <label class='sr-only'>Users</label>
+                                  <div class='input-group mb-2 mr-sm-2 mb-sm-0'>
+                                    <div class='input-group-prepend'>
+                                      <span class='input-group-text'>@</span>
+                                    </div>
+                                    <input
+                                      type='text'
+                                      class='form-control form-control-sm'
+                                      id='inlineFormInputGroup1'
+                                      value={locationVal}
+                                      onChange={(e) => {
+                                        setLocationVal(e.target.value);
+                                      }}
+                                      placeholder='Add user'
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                data-repeater-create
+                                type='button'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (locationVal === "") {
+                                    return;
+                                  }
+                                  setLocationArray((prevState) => {
+                                    return [...prevState, locationVal];
+                                  });
+                                  setLocationVal("");
+                                }}
+                                class='btn btn-info btn-sm icon-btn ml-2 mb-2'>
+                                <i class='mdi mdi-plus'></i>
+                              </button>
+                            </form>
+
+                            {locationArray &&
+                              locationArray.map((loc) => (
+                                <InputArray
+                                  key={Math.random()}
+                                  text={loc}
+                                  onDelete={deleteLocation}
+                                />
+                              ))}
+                          </div>
                         </div>
                       </div>
 
                       <div class='col-md-6'>
                         <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>File</label>
+                          <label class='col-sm-3 col-form-label'>Logo</label>
                           <div class='col-sm-9 grid-margin stretch-card'>
                             <div class='card' style={{ width: "20px" }}>
                               <div class='card-body'>
@@ -306,6 +333,9 @@ const EditEmployer = (props) => {
                                   style={{ width: "290px" }}
                                   type='file'
                                   disabled={!edit}
+                                  onChange={(e) => {
+                                    uploadFile(e);
+                                  }}
                                   // action="https://www.bootstrapdash.com/file-upload"
                                   class='dropzone'
                                   id='my-awesome-dropzone'></input>
@@ -316,23 +346,9 @@ const EditEmployer = (props) => {
                       </div>
                     </div>
                     <button
-                      onClick={async () => {
-                        setSaved(
-                          await createCompany({
-                            CompanyName,
-                            Website,
-                            CompanyDescription,
-                            HeadOffice,
-                            Latitude,
-                            Longitude,
-                            CIN,
-                          })
-                        );
-                        if (saved) {
-                          history.push("/employers");
-                        } else {
-                          history.push("/employers");
-                        }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        submitHandler();
                       }}
                       type='button'
                       class='btn btn-primary mr-2'>
@@ -362,5 +378,5 @@ const EditEmployer = (props) => {
 };
 
 export default connect(null, {
-  createCompany,
+  // createCompany,
 })(EditEmployer);

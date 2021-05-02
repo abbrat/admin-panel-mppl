@@ -46,6 +46,8 @@ const Consultants = (props) => {
           return user._id !== id;
         });
       });
+      await getAllConsultants();
+      await gettingAllConsultants();
     }
   };
 
@@ -78,12 +80,9 @@ const Consultants = (props) => {
                         if (e.target.textContent === "") {
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
-
-                          getAllConsultants();
                         } else {
                           setPageNo(e.target.textContent);
                           console.log("hi");
-                          getAllConsultants();
                         }
                       }}
                     />
@@ -120,7 +119,14 @@ const Consultants = (props) => {
                                       </button>
                                     </td> */}
                                 <td>
-                                  <a
+                                  <button
+                                    class='btn  btn-rounded btn-dark'
+                                    style={{
+                                      padding: "9px",
+                                      marginRight: "5px",
+                                      paddingLeft: "15px",
+                                      paddingRight: "15px",
+                                    }}
                                     onClick={() => {
                                       localStorage.setItem(
                                         "consultant",
@@ -128,17 +134,8 @@ const Consultants = (props) => {
                                       );
                                       history.push("/edit-consultant");
                                     }}>
-                                    <button
-                                      class='btn  btn-rounded btn-dark'
-                                      style={{
-                                        padding: "9px",
-                                        marginRight: "5px",
-                                        paddingLeft: "15px",
-                                        paddingRight: "15px",
-                                      }}>
-                                      Edit
-                                    </button>
-                                  </a>
+                                    Edit
+                                  </button>
                                   <button
                                     class='btn  btn-rounded btn-danger'
                                     disabled={consultant.banAccount}

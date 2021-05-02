@@ -1,20 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getInactiveJobs } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 
-const InactiveEmployers = (props) => {
+const InactiveEmployers = () => {
+  const [inactiveJobs, setInactiveJobs] = useState([]);
+
+  const getJobs = async () => {
+    const jobs = await getInactiveJobs();
+    if (jobs) {
+      setInactiveJobs(jobs);
+    }
+  };
+
   useEffect(() => {
-    getInactiveJobs();
-  });
+    getJobs();
+  }, [inactiveJobs]);
   return (
     <div>
       <div class='main-panel'>
         <div class='content-wrapper'>
           <div class='card'>
             <div class='card-body'>
-              <h4 class='card-title'>Employers</h4>
+              <h4 class='card-title'>Jobs</h4>
               <div class='row'>
                 <div class='col-12'>
                   <div class='table-responsive'>
@@ -30,10 +39,10 @@ const InactiveEmployers = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!Array.isArray(props.jobs) ? (
+                        {inactiveJobs.length === 0 ? (
                           <p>No Old Jobs</p>
                         ) : (
-                          props.jobs.map((jobs) => {
+                          inactiveJobs.map((jobs) => {
                             return (
                               <tr>
                                 <td>{jobs.CompanyName}</td>

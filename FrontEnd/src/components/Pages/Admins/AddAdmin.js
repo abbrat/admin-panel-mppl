@@ -17,6 +17,7 @@ const AddAdmin = () => {
   const [Consultants, setConsultants] = useState(false);
   const [Subscriptions, setSubscriptions] = useState(false);
   const [Admins, setAdmins] = useState(false);
+  const [Dashboard, setDashoard] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -151,17 +152,34 @@ const AddAdmin = () => {
                         </div>
                       </div>
 
-                      <div class='form-group access__div'>
+                      <div className={`form-group ${classes["access__div"]}`}>
                         <label htmlFor='access'>Access</label>
 
                         <div class={classes["access__div--input"]}>
-                          <AdminInput label='Dashobard' />
+                          <AdminInput
+                            label='Dashboard'
+                            onClick={() => {
+                              if (!Dashboard) {
+                                setDashoard(true);
+                                role.push("Dashboard");
+                                console.log(arr);
+                              } else {
+                                setDashoard(false);
+                                setRole(
+                                  role.filter((role) => role !== "Dashboard")
+                                );
+                                console.log("Map Function Starts");
+                                role.map((role, i) => {
+                                  console.log("key:", i, " Value:", role);
+                                });
+                              }
+                            }}
+                          />
                           <AdminInput
                             label='Jobs'
                             onClick={() => {
                               if (!job) {
                                 setJob(true);
-                                // role.push("Jobs");
                                 role.push("Jobs");
                                 console.log(arr);
                               } else {
@@ -175,7 +193,7 @@ const AddAdmin = () => {
                             }}
                           />
                           <AdminInput
-                            label='Cadidates'
+                            label='Candidates'
                             onClick={() => {
                               if (!candidates) {
                                 setCandidates(true);
@@ -224,7 +242,7 @@ const AddAdmin = () => {
                             }}
                           />
                           <AdminInput
-                            label='Webinar'
+                            label='Webinars'
                             onClick={() => {
                               if (!Webinars) {
                                 setWebinars(true);
@@ -275,7 +293,7 @@ const AddAdmin = () => {
                             }}
                           />
                           <AdminInput
-                            label='Subscription'
+                            label='Subscriptions'
                             onClick={() => {
                               if (!Subscriptions) {
                                 setSubscriptions(true);
@@ -292,7 +310,7 @@ const AddAdmin = () => {
                             }}
                           />
                           <AdminInput
-                            label='Admin'
+                            label='Admins'
                             onClick={() => {
                               if (!Admins) {
                                 setAdmins(true);

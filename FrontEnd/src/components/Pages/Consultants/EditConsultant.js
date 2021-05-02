@@ -23,6 +23,28 @@ const EditConsultant = (props) => {
   const [saved, setSaved] = useState();
   const [experience, setExperience] = useState(consultant.experience || "");
   const history = useHistory();
+
+  const submitHandler = async () => {
+    const isUpdated = await updateConsultantByID(
+      {
+        name,
+        sector,
+        about,
+        membershipDate,
+        educationInfo,
+        experience,
+      },
+      consultant._id
+    );
+
+    if (isUpdated) {
+      makeToast("success", "Consultant Updated");
+      return history.goBack();
+    }
+
+    makeToast("error", "Error");
+  };
+
   return (
     <div>
       <div class='main-panel'>
@@ -169,37 +191,9 @@ const EditConsultant = (props) => {
                       </div>
                     </div>
                     <button
-                      onClick={async () => {
-                        console.log(
-                          "Data Passing",
-                          {
-                            name,
-                            sector,
-                            about,
-                            membershipDate,
-                            educationInfo,
-                            experience,
-                          },
-                          consultant._id
-                        );
-                        setSaved(
-                          await updateConsultantByID(
-                            {
-                              name,
-                              sector,
-                              about,
-                              membershipDate,
-                              educationInfo,
-                              experience,
-                            },
-                            consultant._id
-                          )
-                        );
-                        if (saved) {
-                          history.goBack();
-                        } else {
-                          history.goBack();
-                        }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        submitHandler();
                       }}
                       type='button'
                       class='btn btn-primary mr-2'>

@@ -93,14 +93,17 @@ const AddJobs = (props) => {
       const res = await axios.get(
         "http://localhost:5000/api/company/details/" + id
       );
+      console.log(res);
       setContactEmail(res.data.CompanyEmail);
       setContactNumber(parseInt(res.data.CompanyContact));
       setLogo(res.data.Logo);
       setAboutCompany(res.data.AboutCompany);
       setCompanyHireRate(res.data.CompanyHireRate);
       setCompanyMemberSince(res.data.JoiningDate);
+      console.log(res.data);
       let arr = [];
       arr = res.data.OtherOffices;
+      console.log(arr);
       arr.push(res.data.HeadOffice);
       let arr2 = [];
       arr.map((location) => {
@@ -142,7 +145,6 @@ const AddJobs = (props) => {
       Remarks: Remarks || "",
       CompanyMemberSince: CompanyMemberSince || "",
       JobStatus: JobStatus || "",
-      Logo: Logo || "",
       AboutCompany: AboutCompany || "",
       Validity: Validity || "",
       Positions: Positions || "",
@@ -159,6 +161,9 @@ const AddJobs = (props) => {
     if (!isJobInputEmptpy) {
       return makeToast("error", "Please add all the fields");
     }
+
+    if (ContactNumber.toString().length < 10)
+      return makeToast("error", "Contact Number should have atleast 10 digits");
 
     const create = await createJob(job);
 
@@ -279,7 +284,7 @@ const AddJobs = (props) => {
                           </label>
                           <div class='col-sm-9'>
                             <input
-                              type='text'
+                              type='number'
                               required={true}
                               value={SalaryRange}
                               onChange={(e) => {
@@ -379,7 +384,7 @@ const AddJobs = (props) => {
                           </label>
                           <div class='col-sm-9'>
                             <input
-                              type='text'
+                              type='number'
                               required={true}
                               value={ContactNumber}
                               onChange={(e) => {
@@ -662,7 +667,7 @@ const AddJobs = (props) => {
                           </label>
                           <div class='col-sm-9'>
                             <input
-                              type='text'
+                              type='number'
                               required={true}
                               value={ExpectedCTC}
                               onChange={(e) => {
@@ -865,12 +870,18 @@ const AddJobs = (props) => {
                       </div>
                     </div>
                     <button
-                      type='button'
                       onClick={submitHandler}
                       class='btn btn-primary mr-2'>
                       Submit
                     </button>
-                    <button class='btn btn-light'>Cancel</button>
+                    <button
+                      type='reset'
+                      class='btn btn-light'
+                      onClick={() => {
+                        history.push("/posted-jobs");
+                      }}>
+                      Cancel
+                    </button>
                   </form>
                 </div>
               </div>

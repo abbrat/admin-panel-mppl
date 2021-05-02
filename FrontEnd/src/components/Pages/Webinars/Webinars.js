@@ -60,7 +60,7 @@ const useSortableData = (items, config = null) => {
     let direction = "ascending";
     if (
       sortCoonfig &&
-      sortCoonfig.key == key &&
+      sortCoonfig.key === key &&
       sortCoonfig.direction === "ascending"
     ) {
       direction = "descending";
@@ -95,9 +95,8 @@ const Webinars = (props) => {
       const res = await axios.get(
         "http://localhost:5000/api/webinar/users/" + pageNo + "/" + perPage
       );
-      console.log(res.data.user);
-      setArr(res.data.user);
-      // setPage(Math.ceil(res.data.length / 10));
+      // console.log(res.data.user);
+      await setArr(res.data.user);
     } catch (error) {
       console.log(error.message);
     }
@@ -127,6 +126,19 @@ const Webinars = (props) => {
   useEffect(() => {
     getWebinars();
   }, [pageNo]);
+
+  useEffect(() => {
+    if (
+      titleFilter !== "" ||
+      typeFilter !== "" ||
+      dateFilter !== "" ||
+      timeFilter !== ""
+    ) {
+      setFilter(true);
+    } else {
+      setFilter(false);
+    }
+  }, [dateFilter, timeFilter, titleFilter, typeFilter]);
 
   return (
     <div>
@@ -201,14 +213,11 @@ const Webinars = (props) => {
                       onChange={(e) => {
                         console.log("check", e.target.textContent);
                         console.log("pageNo", pageNo);
-                        if (e.target.textContent == "") {
+                        if (e.target.textContent === "") {
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
-
-                          getWebinars();
                         } else {
                           setPageNo(e.target.textContent);
-                          getWebinars();
                         }
                       }}
                     />
@@ -303,7 +312,14 @@ const Webinars = (props) => {
                                     </button>
                                   </td>
                                   <td>
-                                    <a
+                                    <button
+                                      className='btn  btn-rounded btn-dark'
+                                      style={{
+                                        padding: "9px",
+                                        marginRight: "5px",
+                                        paddingLeft: "15px",
+                                        paddingRight: "15px",
+                                      }}
                                       onClick={() => {
                                         localStorage.setItem(
                                           "webinar",
@@ -311,17 +327,8 @@ const Webinars = (props) => {
                                         );
                                         history.push("/edit-webinar");
                                       }}>
-                                      <button
-                                        className='btn  btn-rounded btn-dark'
-                                        style={{
-                                          padding: "9px",
-                                          marginRight: "5px",
-                                          paddingLeft: "15px",
-                                          paddingRight: "15px",
-                                        }}>
-                                        Edit
-                                      </button>
-                                    </a>
+                                      Edit
+                                    </button>
                                     <button
                                       className='btn  btn-rounded btn-danger'
                                       style={{

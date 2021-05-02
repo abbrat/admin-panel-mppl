@@ -10,7 +10,7 @@ const router = require("express").Router();
 //@DESC Get all the Webinarss
 router.get("/all", async (req, res) => {
   try {
-    const webinars = await Webinar.find();
+    const webinars = await Webinar.find({ webinarDate: { $gte: Date.now() } });
     if (webinars.length == 0) {
       return res.json({ msg: "No Webinars Found!" });
     }
@@ -189,6 +189,20 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
+router.get("/inActive", async (req, res) => {
+  try {
+    var webinar = await Webinar.find({ webinarDate: { $lt: Date.now() } });
+
+    if (webinar.length === 0) {
+      return res.json({ status: "failure", msg: "No Webinar Found!" });
+    }
+    res.json({ status: "success", webinar });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ status: "failure", msg: "Error" });
+  }
+});
+
 //@TEST ROUTE
 //@GET User as per Pagination
 router.get("/users/:page/:perPage", async (req, res) => {
@@ -214,7 +228,13 @@ router.get("/users/:page/:perPage", async (req, res) => {
     const limit = req.params.perPage * 1 || 10;
     const skip = (page - 1) * limit;
 
-    const user = await Webinar.find().skip(skip).limit(limit);
+    console.log(Date.now());
+
+    const user = await Webinar.find({
+      webinarDate: { $gte: Date.now() },
+    })
+      .skip(skip)
+      .limit(limit);
 
     res.json({ user });
   } catch (error) {

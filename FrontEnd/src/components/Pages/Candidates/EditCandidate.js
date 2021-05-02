@@ -1,4 +1,3 @@
-import { id } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
@@ -114,7 +113,7 @@ const EditCandidate = (props) => {
 
     if (isUserUpdated) {
       makeToast("success", "Updated");
-      history.goBack();
+      // history.goBack();
     } else {
       makeToast("error", "Error");
     }

@@ -82,6 +82,35 @@ const EditWebinars = (props) => {
   // useEffect(() => {
   //   getCompanies();
   // }, []);
+
+  const submitHandler = async () => {
+    var webinarInstructor = {
+      instructorName: instructorName,
+      designation: designation,
+      aboutInstructor: aboutInstructor,
+    };
+
+    const isUpdated = await updateWebinarByID(
+      {
+        webinarAudience,
+        webinarDate,
+        webinarDescription,
+        webinarInstructor,
+        webinarLink,
+        webinarTitle,
+        webinarTime,
+        webinarType,
+      },
+      webinar._id
+    );
+
+    if (isUpdated) {
+      history.goBack();
+    } else {
+      history.goBack();
+    }
+  };
+
   return (
     <div>
       <div class='main-panel'>
@@ -336,32 +365,9 @@ const EditWebinars = (props) => {
                     </div>
                     <button
                       type='button'
-                      onClick={async () => {
-                        var webinarInstructor = {
-                          instructorName: instructorName,
-                          designation: designation,
-                          aboutInstructor: aboutInstructor,
-                        };
-                        setSaved(
-                          await updateWebinarByID(
-                            {
-                              webinarAudience,
-                              webinarDate,
-                              webinarDescription,
-                              webinarInstructor,
-                              webinarLink,
-                              webinarTitle,
-                              webinarTime,
-                              webinarType,
-                            },
-                            webinar._id
-                          )
-                        );
-                        if (saved) {
-                          history.goBack();
-                        } else {
-                          history.goBack();
-                        }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        submitHandler();
                       }}
                       class='btn btn-primary mr-2'>
                       Submit

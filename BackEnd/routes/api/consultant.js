@@ -85,7 +85,7 @@ router.put("/updateConsultant/:id", async (req, res) => {
         new: true,
       }
     );
-    res.json({ msg: "Consultant Updated", consultant: consultant });
+    res.json({ success: "Consultant Updated", consultant: consultant });
   } catch (error) {
     console.log(error.message);
   }
@@ -182,7 +182,9 @@ router.get("/users/:page/:perPage", async (req, res) => {
     const limit = req.params.perPage * 1 || 10;
     const skip = (page - 1) * limit;
 
-    const consultants = await Consultant.find().skip(skip).limit(limit);
+    const consultants = await Consultant.find({ banAccount: false })
+      .skip(skip)
+      .limit(limit);
 
     res.json({ consultants });
   } catch (error) {

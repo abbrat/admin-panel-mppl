@@ -22,22 +22,30 @@ const upload = multer({
 //@GET User as per Pagination
 router.get("/users/:page/:perPage", async (req, res) => {
   try {
-    var page = parseInt(req.params.page);
-    var perPage = parseInt(req.params.perPage);
-    var users = await Notes.find();
-    var len = users.length;
-    if (users.length == 0) {
-      return res.json({ msg: "No Users Found!" });
-    }
-    if (perPage * page < users.length) {
-      var user2 = await Notes.find()
-        .limit(perPage + 1)
-        .skip(perPage * page + 1);
-    }
-    user = await Notes.find()
-      .limit(perPage)
-      .skip(perPage * page);
-    res.json({ users: users, length: len });
+    // var page = parseInt(req.params.page);
+    // var perPage = parseInt(req.params.perPage);
+    // var users = await Notes.find();
+    // var len = users.length;
+    // if (users.length == 0) {
+    //   return res.json({ msg: "No Users Found!" });
+    // }
+    // if (perPage * page < users.length) {
+    //   var user2 = await Notes.find()
+    //     .limit(perPage + 1)
+    //     .skip(perPage * page + 1);
+    // }
+    // user = await Notes.find()
+    //   .limit(perPage)
+    //   .skip(perPage * page);
+    // res.json({ users: users, length: len });
+
+    const page = req.params.page * 1 || 1;
+    const limit = req.params.perPage * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    const notes = await Notes.find().skip(skip).limit(limit);
+
+    res.json({ notes });
   } catch (error) {
     console.log(error.message);
   }
@@ -166,11 +174,11 @@ router.put("/update/:id", upload.single("file"), async (req, res) => {
 router.delete("/delete/:id", auth, async (req, res) => {
   try {
     await Notes.findOneAndDelete({ _id: req.params.id });
-    res.json({ msg: "Notes Removed" });
+    await res.json({ status: "success" });
   } catch (error) {
     console.log(error.message);
     if (error.kind == "ObjectId") {
-      return res.json({ msg: "Please Enter a Valid ID" });
+      return res.json({ status: "failure", msg: "Please Enter a Valid ID" });
     }
   }
 });

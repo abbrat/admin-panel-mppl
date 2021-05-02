@@ -42,7 +42,7 @@ router.get("/users/:page/:perPage", async (req, res) => {
         .limit(perPage + 1)
         .skip(perPage * page + 1);
     }
-    user = await User.find()
+    user = await User.find({ banAccount: false })
       .limit(perPage)
       .skip(perPage * page);
     res.json(user);
@@ -175,8 +175,6 @@ router.put("/update/:id", async (req, res) => {
   if (!user) {
     return res.json({ msg: "User Not Found!" });
   }
-
-  console.log(typeof preferedWorkLocation);
 
   try {
     if (name) userFields.name = name;

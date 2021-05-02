@@ -51,7 +51,11 @@ const BlockedCandidates = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {bannedUsers &&
+                        {!Array.isArray(bannedUsers) ||
+                        bannedUsers.length == 0 ? (
+                          <p>No blocked candidates</p>
+                        ) : (
+                          bannedUsers &&
                           bannedUsers.map((user) => {
                             return (
                               <tr>
@@ -99,7 +103,8 @@ const BlockedCandidates = () => {
                                 </td>
                               </tr>
                             );
-                          })}
+                          })
+                        )}
                       </tbody>
                     </table>
                   </div>

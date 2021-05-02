@@ -154,8 +154,11 @@ export const getUnApprovedJobs = async () => {
       },
     };
     const res = await axios.get(URL + "/api/jobs/unApprovedJobs", config);
-    console.log(res.data);
-    return res.data;
+
+    if (res.data.status === "success") {
+      console.log(res.data.jobs);
+      return res.data.jobs;
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -168,19 +171,20 @@ export const updateJobById = async (formData, id) => {
         "Content-type": "application/json",
       },
     };
-    const res = await axios.put(
-      URL + "/api/jobs/update/" + id,
+    const res = await axios.patch(
+      `${URL}/api/jobs/update/${id}`,
       formData,
       config
     );
-    if (res.data) {
-      makeToast("success", "Success");
-      console.log(res.data);
+    if (res.data.status === "success") {
+      makeToast("success", "Job Updated");
       return true;
     }
+
+    if (res.data.status === "failure") makeToast("error", res.data.msg);
+    return false;
   } catch (error) {
     makeToast("error", "Error");
-
     console.log(error.message);
     return false;
   }
@@ -211,6 +215,32 @@ export const createCompany = async (formData) => {
   }
 };
 
+export const updateCompanyById = async (formData, id) => {
+  try {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const res = await axios.patch(
+      `${URL}/api/company/update/${id}`,
+      formData,
+      config
+    );
+    if (res.data.status === "success") {
+      makeToast("success", "Company Updated");
+      return true;
+    }
+
+    if (res.data.status === "failure") makeToast("error", "Error");
+    return false;
+  } catch (error) {
+    makeToast("error", "Error");
+    console.log(error.message);
+    return false;
+  }
+};
+
 export const getAllCompanies = () => async (dispatch) => {
   try {
     const res = await axios.get(URL + "/api/company/all");
@@ -220,12 +250,37 @@ export const getAllCompanies = () => async (dispatch) => {
   }
 };
 
-export const getInactiveJobs = () => async (dispatch) => {
+export const getInactiveJobs = async () => {
   try {
     const res = await axios.get(URL + "/api/jobs/expired");
-    dispatch({ type: GET_ALL_JOBS, payload: res.data });
+    if (res.data.status === "success") {
+      return res.data.jobs;
+    }
   } catch (error) {
     console.log(error.message);
+  }
+};
+
+export const updateAdminById = async (id) => {
+  try {
+    const config = {
+      headers: {
+        "x-auth-token": localStorage.getItem("x-auth-token"),
+      },
+    };
+    console.log(URL + "/api/admin/update/" + id);
+    const res = await axios.patch(URL + "/api/admin/update/" + id, config);
+
+    if (res.data.msg) {
+      return makeToast("error", res.data.msg);
+    } else if (res.data.success) {
+      console.log(res.data.success);
+      makeToast("error", res.data.success);
+      return true;
+    }
+  } catch (error) {
+    console.log(error.message);
+    return makeToast("error", error.message);
   }
 };
 
@@ -426,7 +481,7 @@ export const deleteNotesById = async (id) => {
       },
     };
     const res = await axios.delete(URL + "/api/notes/delete/" + id, config);
-    if (res.status === 200) {
+    if (res.data.status === "success") {
       makeToast("success", "Success");
       return true;
     }
@@ -567,10 +622,11 @@ export const updateConsultantByID = async (formData, id) => {
       formData,
       config
     );
-    if (res.data.msg === "Consultant Updated!") {
-      console.log(res.data);
-      makeToast("success", "Success");
+    if (res.data.success === "Consultant Updated") {
       return true;
+    }
+    if (res.data.msg) {
+      return false;
     }
   } catch (error) {
     console.log(error.message);
@@ -629,7 +685,21 @@ export const getAllWebinars = async () => {
 export const getInactiveWebinars = () => async (dispatch) => {
   try {
     const res = await axios.get(URL + "/api/webinar/inActive");
-    dispatch({ type: GET_ALL_WEBINARS, payload: res.data });
+    if (res.data.status === "success") {
+      return res.data.webinar;
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const getInactiveEmployers = async () => {
+  try {
+    const res = await axios.get(URL + "/api/company/inActive");
+
+    if (res.data.status === "success") {
+      return res.data.cmps;
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -648,9 +718,11 @@ export const updateWebinarByID = async (formData, id) => {
       config
     );
     if (res.data.msg === "Webinar Updated!") {
-      makeToast("success", "Success");
+      makeToast("success", "Webinar Updated");
       return true;
     }
+
+    makeToast("error", "Error");
   } catch (error) {
     makeToast("error", error.message);
 

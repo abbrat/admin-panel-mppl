@@ -20,9 +20,11 @@ const useFilterData = (fItems, config = null) => {
 
   const filterItems = useMemo(() => {
     let filterableItems;
+
     if (fItems) {
       filterableItems = fItems && [...fItems];
     }
+
     if (filterConfig !== null) {
       filterableItems = filterableItems.filter((job) => {
         if (
@@ -47,8 +49,9 @@ const useSortableData = (items, config = null) => {
 
   const sortedItems = useMemo(() => {
     let sortableItems;
+
     if (items) {
-      sortableItems = items && [...items];
+      sortableItems = [...items];
     }
     if (sortCoonfig !== null) {
       sortableItems.sort((a, b) => {
@@ -109,7 +112,9 @@ const PostedJobs = (props) => {
       const res = await axios.get(
         "http://localhost:5000/api/jobs/users/" + pageNo + "/" + perPage
       );
-      setArr(res.data.users);
+      if (res.data.jobs) {
+        return setArr(res.data.jobs);
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -141,15 +146,17 @@ const PostedJobs = (props) => {
   }, []);
 
   useEffect(() => {
-    // getAllJobs();
     getJobs();
     // setJobs(arr);
+  }, [arr]);
+
+  useEffect(() => {
     if (nameFilter !== "" || titleFilter !== "") {
-      setFilter(false);
-    } else {
       setFilter(true);
+    } else {
+      setFilter(false);
     }
-  }, [arr, nameFilter, titleFilter]);
+  }, [nameFilter, titleFilter]);
 
   // const filterData = () => {
   //   if (nameFilter == "" && titleFilter == "") {
@@ -369,12 +376,8 @@ const PostedJobs = (props) => {
                               if (e.target.textContent === "") {
                                 var no = parseInt(pageNo);
                                 setPageNo(no + 1);
-
-                                getJobs();
                               } else {
                                 setPageNo(e.target.textContent);
-                                console.log("hi");
-                                getJobs();
                               }
                             }}
                           />
@@ -383,6 +386,9 @@ const PostedJobs = (props) => {
                               <tr>
                                 <th
                                   onClick={() => {
+                                    if (items.length === 0) {
+                                      return;
+                                    }
                                     requestSort("JobTitle");
                                     setFilter(true);
                                     if (filter) {
@@ -395,6 +401,9 @@ const PostedJobs = (props) => {
                                 </th>
                                 <th
                                   onClick={() => {
+                                    if (items.length === 0) {
+                                      return;
+                                    }
                                     requestSort("CompanyName");
                                     setFilter(true);
                                     if (filter) {
@@ -414,6 +423,9 @@ const PostedJobs = (props) => {
                                 </th>
                                 <th
                                   onClick={() => {
+                                    if (items.length === 0) {
+                                      return;
+                                    }
                                     requestSort("date");
                                     setFilter(true);
                                     if (filter) {

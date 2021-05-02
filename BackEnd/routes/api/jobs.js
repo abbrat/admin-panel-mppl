@@ -32,6 +32,7 @@ router.post("/", async (req, res) => {
     Location,
     PublishType,
     Remarks,
+    Validity,
     Description,
     SalaryRange,
     Distance,
@@ -47,6 +48,7 @@ router.post("/", async (req, res) => {
     if (Category) jobFields.Category = Category;
     if (Positions) jobFields.Positions = Positions;
     if (SalaryRange) jobFields.SalaryRange = SalaryRange;
+    if (Validity) jobFields.Validity = Validity;
     if (Distance) jobFields.Distance = Distance;
     if (PreviousExp) jobFields.PreviousExp = PreviousExp;
     if (CompanyHireRate) jobFields.CompanyHireRate = CompanyHireRate;
@@ -128,7 +130,7 @@ router.get("/unApprovedJobs", auth, async (req, res) => {
     if (job.length == 0) {
       return res.json({ msg: "There is No UnApproved Jobs!" });
     }
-    res.json(job);
+    res.json({ status: "success", jobs: job });
   } catch (error) {
     console.log(error.message);
   }
@@ -477,7 +479,7 @@ router.delete("/:id", auth, (req, res) => {
 
 //@PUT Route
 //@DESC Update Job by ID
-router.put("/update/:id", async (req, res) => {
+router.patch("/update/:id", async (req, res) => {
   const {
     CompanyName,
     Designation,
@@ -540,14 +542,17 @@ router.put("/update/:id", async (req, res) => {
     var company = await Company.findOne({ CompanyName: CompanyName });
     if (company) {
       jobFields.Logo = company.Logo;
+      console.log(req.params.id);
       let job = await Jobs.findByIdAndUpdate(
         { _id: req.params.id },
         { $set: jobFields },
         { new: true }
       );
-      return res.json({ msg: "Job Updated", job: job });
+      if (job) {
+        return res.json({ status: "success", job: job });
+      }
     } else {
-      return res.json({ msg: "Company not Created Yet!" });
+      return res.json({ status: "failure", msg: "Company not Created Yet!" });
     }
   } catch (error) {
     console.log(error.message);
@@ -576,10 +581,10 @@ router.get("/expired", async (req, res) => {
         return job;
       }
     });
-    if (jobs.length == 0) {
-      return res.json({ msg: "No Inactive Jobs" });
+    if (!jobs) {
+      return res.json({ status: "failure", msg: "No Inactive Jobs" });
     }
-    res.json(jobs);
+    res.json({ status: "success", jobs });
   } catch (error) {
     console.log(error.message);
   }
@@ -589,22 +594,32 @@ router.get("/expired", async (req, res) => {
 //@GET User as per Pagination
 router.get("/users/:page/:perPage", async (req, res) => {
   try {
-    var page = parseInt(req.params.page);
-    var perPage = parseInt(req.params.perPage);
-    var users = await Jobs.find();
-    var len = users.length;
-    if (users.length == 0) {
-      return res.json({ msg: "No Users Found!" });
-    }
-    if (perPage * page < users.length) {
-      var user2 = await Jobs.find()
-        .limit(perPage + 1)
-        .skip(perPage * page + 1);
-    }
-    user = await Jobs.find()
-      .limit(perPage)
-      .skip(perPage * page);
-    res.json({ users: users, length: len });
+    // var page = parseInt(req.params.page);
+    // var perPage = parseInt(req.params.perPage);
+    // var users = await Jobs.find();
+    // var len = users.length;
+    // if (users.length == 0) {
+    //   return res.json({ msg: "No Users Found!" });
+    // }
+    // if (perPage * page < users.length) {
+    //   var user2 = await Jobs.find()
+    //     .limit(perPage + 1)
+    //     .skip(perPage * page + 1);
+    // }
+    // user = await Jobs.find()
+    //   .limit(perPage)
+    //   .skip(perPage * page);
+    // res.json({ users: users, length: len });
+
+    const page = req.params.page * 1 || 1;
+    const limit = req.params.perPage * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    const jobs = await Jobs.find({ jobStatus: "Approved" })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({ jobs });
   } catch (error) {
     console.log(error.message);
   }

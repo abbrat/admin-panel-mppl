@@ -107,7 +107,7 @@ class App extends Component {
                       component={EditEmployer}></Route>
                     <Route
                       path='/inactive-employers'
-                      component={InactiveJobs}></Route>
+                      component={InactiveEmployers}></Route>
                   </Fragment>
                 ) : (
                   <Fragment></Fragment>

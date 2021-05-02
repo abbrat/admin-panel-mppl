@@ -26,7 +26,7 @@ const CompanySchema = new mongoose.Schema({
     type: String,
   },
   OtherOffices: {
-    type: [String],
+    type: Array,
   },
   Validity: {
     type: Date,

@@ -38,7 +38,9 @@ router.get("/users/:page/:perPage", async (req, res) => {
     const limit = req.params.perPage * 1 || 10;
 
     const skip = (page - 1) * limit;
-    const admins = await Admin.find().skip(skip).limit(limit);
+    const admins = await Admin.find({ banAccount: false })
+      .skip(skip)
+      .limit(limit);
 
     res.json({ admins });
   } catch (error) {
@@ -260,13 +262,22 @@ router.post("/login", async (req, res) => {
 
 //@PUT Route
 //@DESC Update Admin Details
-router.put("/update/:id", auth, async (req, res) => {
-  const { name, designation, email, oldPassword, newPassword } = req.body;
+router.patch("/update/:id", auth, async (req, res) => {
+  const {
+    name,
+    designation,
+    email,
+    number,
+    oldPassword,
+    newPassword,
+  } = req.body;
+  console.log(req.body.name);
   const adminFields = {};
   try {
     if (name) adminFields.name = name;
     if (designation) adminFields.designation = designation;
     if (email) adminFields.email = email;
+    if (number) adminFields.number = number;
     if (newPassword) adminFields.password = newPassword;
     var admin = await Admin.findById(req.params.id);
     if (!admin) {
@@ -280,8 +291,8 @@ router.put("/update/:id", auth, async (req, res) => {
       }
       const salt = await bcryptjs.genSalt(10);
       adminFields.password = await bcryptjs.hash(newPassword, salt);
-      admin = await Admin.findOneAndUpdate(
-        { id: req.params.id },
+      admin = await Admin.findByIdAndUpdate(
+        { _id: req.params.id },
         {
           $set: adminFields,
         },
@@ -289,7 +300,16 @@ router.put("/update/:id", auth, async (req, res) => {
           new: true,
         }
       );
-      return res.json({ msg: "User Updated", data: admin });
+      return res.json({ success: "Admin Updated", data: admin });
+    } else {
+      const doc = await Admin.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+      if (!doc) {
+        return res.json({ msg: "No found" });
+      }
+      return res.json({ success: "Admin Updated", data: admin });
     }
   } catch (error) {
     console.log(error.message);

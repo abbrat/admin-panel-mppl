@@ -7,6 +7,7 @@ import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import { useHistory } from "react-router";
 import makeToast from "../../../Toaster";
+import InputArray from "../Candidates/InputArray";
 
 const AddEmployer = (props) => {
   const [CompanyName, setCompanyName] = useState("");
@@ -14,6 +15,9 @@ const AddEmployer = (props) => {
   const [CompanyContact, setCompanyContact] = useState("");
   const [Subscription, setSubscription] = useState("");
   const [PostedJobs, setPostedJobs] = useState("");
+
+  const [locationArray, setLocationArray] = useState([]);
+  const [locationVal, setLocationVal] = useState("");
 
   let getDate = moment().format("DD/MM/YYYY");
   const [CompanyDescription, setCompanyDescription] = useState("");
@@ -33,6 +37,8 @@ const AddEmployer = (props) => {
   const [saved, setSaved] = useState();
   const history = useHistory();
   const dataSubmit = async () => {
+    const locations = JSON.stringify(locationArray);
+
     if (
       CompanyName === "" ||
       CompanyDescription === "" ||
@@ -54,7 +60,10 @@ const AddEmployer = (props) => {
     formData.append("HeadOffice", HeadOffice);
     formData.append("Website", Website);
     formData.append("Validity", Validity);
+    formData.append("ComanyContact", CompanyContact);
     formData.append("Logo", Logo);
+    formData.append("OtherOffices", locations);
+    formData.append("CompanyEmail", CompanyEmail);
     console.log(FormData);
     setSaved(await createCompany(formData));
     if (saved) {
@@ -62,6 +71,14 @@ const AddEmployer = (props) => {
     } else {
       history.push("/employers");
     }
+  };
+
+  const deleteLocation = (enteredSkill) => {
+    setLocationArray((prevState) => {
+      return prevState.filter((skill) => {
+        return skill !== enteredSkill;
+      });
+    });
   };
 
   return (
@@ -120,7 +137,7 @@ const AddEmployer = (props) => {
                                 </label>
                                 <div class='col-sm-9'>
                                   <input
-                                    type='text'
+                                    type='number'
                                     value={CompanyContact}
                                     onChange={(e) => {
                                       setCompanyContact(e.target.value);
@@ -152,20 +169,15 @@ const AddEmployer = (props) => {
                                 <label class='col-sm-3 col-form-label'>
                                   Joining Date
                                 </label>
-                                <div
-                                  id='datepicker-popup'
-                                  class='input-group date datepicker col-sm-9'>
+                                <div class='input-group col-sm-9'>
                                   <input
-                                    type='text'
+                                    type='date'
                                     value={JoiningDate}
                                     onChange={(e) => {
                                       setJoiningDate(e.target.value);
                                     }}
                                     class='form-control'
                                   />
-                                  <span class='input-group-addon input-group-append border-left'>
-                                    <span class='mdi mdi-calendar input-group-text'></span>
-                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -226,20 +238,15 @@ const AddEmployer = (props) => {
                                 <label class='col-sm-3 col-form-label'>
                                   Validity
                                 </label>
-                                <div
-                                  id='datepicker-popup'
-                                  class='input-group date datepicker col-sm-9'>
+                                <div class='input-group col-sm-9'>
                                   <input
-                                    type='text'
+                                    type='date'
                                     class='form-control'
                                     value={Validity}
                                     onChange={(e) => {
                                       setValidity(e.target.value);
                                     }}
                                   />
-                                  <span class='input-group-addon input-group-append border-left'>
-                                    <span class='mdi mdi-calendar input-group-text'></span>
-                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -248,20 +255,15 @@ const AddEmployer = (props) => {
                                 <label class='col-sm-3 col-form-label'>
                                   CIN
                                 </label>
-                                <div
-                                  id='datepicker-popup'
-                                  class='input-group date datepicker col-sm-9'>
+                                <div class='input-group date datepicker col-sm-9'>
                                   <input
-                                    type='text'
+                                    type='date'
                                     class='form-control'
                                     value={CIN}
                                     onChange={(e) => {
                                       setCIN(e.target.value);
                                     }}
                                   />
-                                  <span class='input-group-addon input-group-append border-left'>
-                                    <span class='mdi mdi-calendar input-group-text'></span>
-                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -289,7 +291,6 @@ const AddEmployer = (props) => {
                               <div class='form-group row'>
                                 <label
                                   class='col-sm-3'
-                                  for='exampleFormControlSelect2'
                                   style={{ alignSelf: "center" }}>
                                   Other Location
                                 </label>
@@ -299,11 +300,7 @@ const AddEmployer = (props) => {
                                       <div
                                         data-repeater-item
                                         class='d-flex mb-2'>
-                                        <label
-                                          class='sr-only'
-                                          for='inlineFormInputGroup1'>
-                                          Users
-                                        </label>
+                                        <label class='sr-only'>Users</label>
                                         <div class='input-group mb-2 mr-sm-2 mb-sm-0'>
                                           <div class='input-group-prepend'>
                                             <span class='input-group-text'>
@@ -314,29 +311,40 @@ const AddEmployer = (props) => {
                                             type='text'
                                             class='form-control form-control-sm'
                                             id='inlineFormInputGroup1'
+                                            value={locationVal}
+                                            onChange={(e) => {
+                                              setLocationVal(e.target.value);
+                                            }}
                                             placeholder='Add user'
                                           />
                                         </div>
-                                        <button
-                                          type='submit'
-                                          class='btn btn-success btn-sm'>
-                                          Submit
-                                        </button>
-                                        <button
-                                          data-repeater-delete
-                                          type='button'
-                                          class='btn btn-danger btn-sm icon-btn ml-2'>
-                                          <i class='mdi mdi-delete'></i>
-                                        </button>
                                       </div>
                                     </div>
                                     <button
                                       data-repeater-create
                                       type='button'
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        if (locationVal === "") {
+                                          return;
+                                        }
+                                        setLocationArray((prevState) => {
+                                          return [...prevState, locationVal];
+                                        });
+                                        setLocationVal("");
+                                      }}
                                       class='btn btn-info btn-sm icon-btn ml-2 mb-2'>
                                       <i class='mdi mdi-plus'></i>
                                     </button>
                                   </form>
+                                  {locationArray &&
+                                    locationArray.map((skill) => (
+                                      <InputArray
+                                        key={Math.random()}
+                                        text={skill}
+                                        onDelete={deleteLocation}
+                                      />
+                                    ))}
                                 </div>
                               </div>
                             </div>

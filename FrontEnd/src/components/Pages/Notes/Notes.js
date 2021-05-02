@@ -12,8 +12,7 @@ const useFilterData = (fItems, config = null) => {
   const [filterConfig, setFilterConfig] = useState(config);
 
   const filterItems = useMemo(() => {
-    let filterableItems = fItems && [...fItems];
-    console.log("Fitems", fItems);
+    let filterableItems = [...fItems];
     if (filterConfig !== null) {
       filterableItems = filterableItems.filter((note) => {
         if (
@@ -38,7 +37,7 @@ const useSortableData = (items, config = null) => {
   const [sortCoonfig, setSortConfig] = useState(config);
 
   const sortedItems = useMemo(() => {
-    let sortableItems = items && [...items];
+    let sortableItems = [...items];
     if (sortCoonfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortCoonfig.key] < b[sortCoonfig.key]) {
@@ -74,7 +73,11 @@ const Notes = () => {
       const res = await axios.get(
         "http://localhost:5000/api/notes/users/" + pageNo + "/" + perPage
       );
-      setNotes(res.data.users);
+      console.log("Hello");
+
+      if (res.data.notes) {
+        await setNotes(res.data.notes);
+      }
       // setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
@@ -85,7 +88,7 @@ const Notes = () => {
   const history = useHistory();
   const { fItems, requestFilter, filterConfig } = useFilterData(arr);
 
-  const [perPage, setPerPage] = useState("9");
+  const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
@@ -97,8 +100,6 @@ const Notes = () => {
   const [filter, setFilter] = useState(false);
 
   const [allNotes, setAllNotes] = useState([]);
-
-  // const [page, setPage] = useState();
 
   const gettingAllNotes = async () => {
     const notes = await getAllNotes();
@@ -118,30 +119,33 @@ const Notes = () => {
 
   const deleteUser = async (id) => {
     const deletedNote = await deleteNotesById(id);
-    console.log(deletedNote);
+
     if (deletedNote) {
-      setNotes((prevSate) => {
-        return prevSate.filter((note) => {
+      await setNotes((prevState) => {
+        return prevState.filter((note) => {
           return note._id !== id;
         });
       });
     }
+    await gettingAllNotes();
+    await getNotes();
   };
 
   useEffect(() => {
-    console.log("Hello");
     gettingAllNotes();
-  }, [arr]);
+  }, []);
 
   useEffect(() => {
     getNotes();
+  }, [arr]);
 
+  useEffect(() => {
     if (nameFilter !== "" || emailFilter !== "" || numberFilter !== "") {
-      setFilter(false);
-    } else {
       setFilter(true);
+    } else {
+      setFilter(false);
     }
-  }, [pageNo, nameFilter, emailFilter, numberFilter]);
+  }, [nameFilter, emailFilter, numberFilter]);
 
   return (
     <div>
@@ -207,12 +211,8 @@ const Notes = () => {
                         if (e.target.textContent == "") {
                           var no = parseInt(pageNo);
                           setPageNo(no + 1);
-
-                          getNotes();
                         } else {
                           setPageNo(e.target.textContent);
-                          console.log("hi");
-                          getNotes();
                         }
                       }}
                     />
@@ -261,7 +261,7 @@ const Notes = () => {
                       </thead>
                       <tbody>
                         {filter ? (
-                          items === undefined || items.length == 0 ? (
+                          items === undefined || items.length === 0 ? (
                             <p>Empty</p>
                           ) : (
                             items &&
@@ -344,11 +344,24 @@ const Notes = () => {
                                     href={note.file}
                                     class='btn btn-primary btn-rounded'
                                     style={{
-                                      padding: "10px",
+                                      padding: "12px",
+                                      paddingLeft: "15px",
+                                      paddingRight: "15px",
+                                      marginRight: "10px",
+                                    }}>
+                                    Download
+                                  </a>
+                                  <a
+                                    onClick={(e) => {
+                                      preview(e, note.file);
+                                    }}
+                                    class='btn btn-primary btn-rounded'
+                                    style={{
+                                      padding: "12px",
                                       paddingLeft: "15px",
                                       paddingRight: "15px",
                                     }}>
-                                    Download
+                                    Preview
                                   </a>
                                 </td>
                                 <td>
@@ -367,7 +380,7 @@ const Notes = () => {
                                       );
                                       history.push("/edit-notes");
                                     }}>
-                                    Edit1
+                                    Edit
                                   </button>
                                   <button
                                     class='btn  btn-rounded btn-danger'

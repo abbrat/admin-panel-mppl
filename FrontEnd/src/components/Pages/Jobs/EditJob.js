@@ -7,49 +7,76 @@ import Sidebar from "../../Sidebar/Sidebar";
 import makeToast from "../../../Toaster";
 
 const EditJob = (props) => {
-  const [jobObj, setJobObj] = useState({
-    job: JSON.parse(localStorage.getItem("selectedJob")),
-  });
+  const [jobObj, setJobObj] = useState(
+    JSON.parse(localStorage.getItem("selectedJob"))
+  );
 
-  const [CompanyName, setCompanyName] = useState(jobObj.job.CompanyName || "");
-  const [Desgination, setDesgination] = useState(jobObj.job.Desgination || "");
+  const [CompanyName, setCompanyName] = useState(jobObj.CompanyName || "");
+  const [Desgination, setDesgination] = useState(jobObj.Desgination || "");
   const [ContactPerson, setContactPerson] = useState(
-    jobObj.job.ContactPerson || ""
+    jobObj.ContactPerson || ""
   );
   const [ContactNumber, setContactNumber] = useState(
-    jobObj.job.ContactNumber || ""
+    jobObj.ContactNumber || ""
   );
-  const [ContactEmail, setContactEmail] = useState(
-    jobObj.job.ContactEmail || ""
-  );
-  const [JobTitle, setJobTitle] = useState(jobObj.job.JobTitle || "");
-  const [JobType, setJobType] = useState(jobObj.job.JobType || "");
+  const [ContactEmail, setContactEmail] = useState(jobObj.ContactEmail || "");
+  const [JobTitle, setJobTitle] = useState(jobObj.JobTitle || "");
+  const [JobType, setJobType] = useState(jobObj.JobType || "");
   const [Qualificaiton, setQualificaiton] = useState(
-    jobObj.job.Qualificaiton || ""
+    jobObj.Qualificaiton || ""
   );
-  const [Experience, setExperience] = useState(jobObj.job.Experience || "");
-  const [ExpectedCTC, setExpectedCTC] = useState(jobObj.job.ExpectedCTC || "");
-  const [Industry, setIndustry] = useState(jobObj.job.Industry || "");
+  const [Experience, setExperience] = useState(jobObj.Experience || "");
+  const [ExpectedCTC, setExpectedCTC] = useState(jobObj.ExpectedCTC || "");
+  const [Industry, setIndustry] = useState(jobObj.Industry || "");
   const [KeySkills, setKeySkills] = useState([]);
   // const [Location, setLocation] = useState(jobObj.Location.state || "");
   const [PublishType, setPublishType] = useState("");
-  const [Remarks, setRemarks] = useState(jobObj.job.Remarks || "");
-  const [Description, setDescription] = useState(jobObj.job.Description || "");
-  const [SalaryRange, setSalaryRange] = useState(jobObj.job.SalaryRange || "");
+  const [Remarks, setRemarks] = useState(jobObj.Remarks || "");
+  const [Description, setDescription] = useState(jobObj.Description || "");
+  const [SalaryRange, setSalaryRange] = useState(jobObj.SalaryRange || "");
   const [Distance, setDistance] = useState("");
-  const [PreviousExp, setPreviousExp] = useState(jobObj.job.PreviousExp || "");
+  const [PreviousExp, setPreviousExp] = useState(jobObj.PreviousExp || "");
   const [CompanyHireRate, setCompanyHireRate] = useState(
-    jobObj.job.CompanyHireRate || ""
+    jobObj.CompanyHireRate || ""
   );
   const [CompanyMemberSince, setCompanyMemberSince] = useState(
-    jobObj.job.CompanyMemberSince || ""
+    jobObj.CompanyMemberSince || ""
   );
-  const [Category, setCategory] = useState(jobObj.job.Category || "");
+  const [Category, setCategory] = useState(jobObj.Category || "");
 
   const history = useHistory();
   const [saved, setSaved] = useState();
 
   console.log(JSON.parse(localStorage.getItem("selectedJob")).CompanyName);
+
+  const submitHandler = async () => {
+    console.log("fdsf", jobObj._id);
+    setSaved(
+      await updateJobById(
+        {
+          CompanyHireRate,
+          CompanyName,
+          Desgination,
+          ContactEmail,
+          ContactNumber,
+          ContactPerson,
+          JobTitle,
+          JobType,
+          Description,
+          SalaryRange,
+          PreviousExp,
+          Category,
+        },
+        jobObj._id
+      )
+    );
+
+    if (saved) {
+      history.push("/posted-jobs");
+    } else {
+      history.push("/posted-jobs");
+    }
+  };
 
   return (
     <div>
@@ -303,38 +330,20 @@ const EditJob = (props) => {
                     </div>
                     <button
                       type='button'
-                      onClick={async () => {
-                        setSaved(
-                          await updateJobById(
-                            {
-                              Location,
-                              CompanyHireRate,
-                              CompanyName,
-                              Desgination,
-                              ContactEmail,
-                              ContactNumber,
-                              ContactPerson,
-                              JobTitle,
-                              JobType,
-                              Description,
-                              SalaryRange,
-                              PreviousExp,
-                              Category,
-                            },
-                            jobObj._id
-                          )
-                        );
-                        if (saved) {
-                          // makeToast("success", "Success");
-                          history.push("/posted-jobs");
-                        } else {
-                          history.push("/posted-jobs");
-                        }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        submitHandler();
                       }}
                       class='btn btn-primary mr-2'>
                       Submit
                     </button>
-                    <button class='btn btn-light'>Cancel</button>
+                    <button
+                      class='btn btn-light'
+                      onClick={() => {
+                        history.push("/posted-jobs");
+                      }}>
+                      Cancel
+                    </button>
                   </form>
                 </div>
               </div>

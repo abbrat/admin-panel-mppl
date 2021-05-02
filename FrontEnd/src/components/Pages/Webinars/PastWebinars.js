@@ -1,13 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getInactiveWebinars } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 
 const PastWebinars = (props) => {
+  const [inactiveWeb, setInactiveWeb] = useState([]);
+
+  const getWebinars = async () => {
+    const emp = await getInactiveWebinars();
+    console.log(emp);
+    if (emp) {
+      setInactiveWeb(emp);
+    }
+  };
+
   useEffect(() => {
-    getInactiveWebinars();
-  });
+    getWebinars();
+  }, []);
   return (
     <div>
       <div class='main-panel'>
@@ -29,10 +39,12 @@ const PastWebinars = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!Array.isArray(props.webinars) ? (
+                        {!Array.isArray(inactiveWeb) ||
+                        inactiveWeb.length === 0 ? (
                           <p>No Past Webinars</p>
                         ) : (
-                          props.webinars.map((webinars) => {
+                          Array.isArray(inactiveWeb) &&
+                          inactiveWeb.map((webinars) => {
                             return (
                               <tr>
                                 <td>{webinars.webinarTitle}</td>
@@ -82,4 +94,6 @@ const PastWebinars = (props) => {
 const mapStateToProps = (state) => ({
   webinars: state.admin.webinars,
 });
-export default connect(mapStateToProps, { getInactiveWebinars })(PastWebinars);
+export default connect(mapStateToProps, {
+  getInactiveWebinars,
+})(PastWebinars);
