@@ -12,7 +12,7 @@ const useFilterData = (fItems, config = null) => {
   const [filterConfig, setFilterConfig] = useState(config);
 
   const filterItems = useMemo(() => {
-    let filterableItems = [...fItems];
+    let filterableItems = fItems && [...fItems];
     if (filterConfig !== null) {
       filterableItems = filterableItems.filter((note) => {
         if (
@@ -37,7 +37,7 @@ const useSortableData = (items, config = null) => {
   const [sortCoonfig, setSortConfig] = useState(config);
 
   const sortedItems = useMemo(() => {
-    let sortableItems = [...items];
+    let sortableItems = items && [...items];
     if (sortCoonfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortCoonfig.key] < b[sortCoonfig.key]) {
@@ -207,13 +207,8 @@ const Notes = () => {
                       variant='outlined'
                       shape='rounded'
                       count={Math.ceil(allNotes && allNotes.length / 10)}
-                      onChange={(e) => {
-                        if (e.target.textContent == "") {
-                          var no = parseInt(pageNo);
-                          setPageNo(no + 1);
-                        } else {
-                          setPageNo(e.target.textContent);
-                        }
+                      onChange={(e, page) => {
+                        setPageNo(page);
                       }}
                     />
                     <table class='table'>
@@ -279,7 +274,8 @@ const Notes = () => {
                                         paddingLeft: "15px",
                                         paddingRight: "15px",
                                         marginRight: "10px",
-                                      }}>
+                                      }}
+                                      download>
                                       Download
                                     </a>
                                     <a

@@ -86,13 +86,8 @@ const Admins = (props) => {
                         variant='outlined'
                         shape='rounded'
                         count={Math.ceil(admins && admins.length / 10)}
-                        onChange={(e) => {
-                          if (e.target.textContent === "") {
-                            var no = parseInt(pageNo);
-                            setPageNo(no + 1);
-                          } else {
-                            setPageNo(e.target.textContent);
-                          }
+                        onChange={(e, page) => {
+                          setPageNo(page);
                         }}
                       />
                       <table class='table'>

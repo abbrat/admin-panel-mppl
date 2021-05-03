@@ -4,7 +4,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { CSVLink } from "react-csv";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
-import { getAllCompanies } from "../../../actions/adminActions";
+import {
+  deleteCompanyByID,
+  getAllCompanies,
+} from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 
@@ -56,7 +59,7 @@ const useSortableData = (items, config = null) => {
     let direction = "ascending";
     if (
       sortCoonfig &&
-      sortCoonfig.key == key &&
+      sortCoonfig.key === key &&
       sortCoonfig.direction === "ascending"
     ) {
       direction = "descending";
@@ -66,12 +69,11 @@ const useSortableData = (items, config = null) => {
   return { items: sortedItems, requestSort, sortCoonfig };
 };
 
-const Employers = (props) => {
+const Employers = () => {
   const history = useHistory();
   const [arr, setArr] = useState([]);
   const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
-  const [page, setPage] = useState();
   const { items, requestSort, sortCoonfig } = useSortableData(arr);
   const [filter, setFilter] = useState(false);
 
@@ -81,6 +83,8 @@ const Employers = (props) => {
   const [website, setWebsiteFilter] = useState("");
   const { fItems, requestFilter, filterConfig } = useFilterData(arr);
 
+  const [allCompanies, setAllCompanies] = useState([]);
+
   const getCompanies = async () => {
     try {
       const res = await axios.get(
@@ -88,11 +92,40 @@ const Employers = (props) => {
       );
       console.log(res);
       await setArr(res.data.users);
-      setPage(Math.ceil(res.data.length / 10));
     } catch (error) {
       console.log(error.message);
     }
   };
+
+  const gettingAllCompany = async () => {
+    const comp = await getAllCompanies();
+    if (comp) {
+      console.log(comp);
+      await setAllCompanies(comp);
+    }
+  };
+
+  const deleteCompany = async (id) => {
+    try {
+      const isJobDeleted = await deleteCompanyByID(id);
+      if (isJobDeleted) {
+        setArr((prevState) => {
+          return prevState.filter((job) => {
+            return job._id !== id;
+          });
+        });
+        await gettingAllCompany();
+        await getCompanies();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    gettingAllCompany();
+  }, []);
+
   useEffect(() => {
     getCompanies();
   }, [pageNo]);
@@ -174,17 +207,11 @@ const Employers = (props) => {
                       boundaryCount={1}
                       variant='outlined'
                       shape='rounded'
-                      count={page}
-                      onChange={(e) => {
-                        if (e.target.textContent === "") {
-                          var no = parseInt(pageNo);
-                          setPageNo(no + 1);
-
-                          getCompanies();
-                        } else {
-                          setPageNo(e.target.textContent);
-                          getCompanies();
-                        }
+                      count={Math.ceil(
+                        allCompanies && allCompanies.length / 10
+                      )}
+                      onChange={(e, page) => {
+                        setPageNo(page);
                       }}
                     />
                     <table class='table'>
@@ -273,25 +300,26 @@ const Employers = (props) => {
                                           >
                                             View
                                           </button> */}
-                                    <a
-                                      onClick={() => {
-                                        localStorage.setItem(
-                                          "company",
-                                          JSON.stringify(company)
-                                        );
-                                        history.push("/edit-employer");
+                                    <button
+                                      class='btn  btn-rounded btn-dark'
+                                      style={{
+                                        padding: "9px",
+                                        marginRight: "5px",
+                                        paddingLeft: "15px",
+                                        paddingRight: "15px",
                                       }}>
-                                      <button
-                                        class='btn  btn-rounded btn-dark'
-                                        style={{
-                                          padding: "9px",
-                                          marginRight: "5px",
-                                          paddingLeft: "15px",
-                                          paddingRight: "15px",
-                                        }}>
-                                        Edit
-                                      </button>
-                                    </a>
+                                      Edit
+                                    </button>
+                                    <button
+                                      class='btn  btn-rounded btn-danger'
+                                      style={{
+                                        padding: "9px",
+                                      }}
+                                      onClick={() => {
+                                        deleteCompany(company._id);
+                                      }}>
+                                      Delete
+                                    </button>
                                   </td>
                                 </tr>
                               );
@@ -331,6 +359,16 @@ const Employers = (props) => {
                                       history.push("/edit-employer");
                                     }}>
                                     Edit
+                                  </button>
+                                  <button
+                                    class='btn  btn-rounded btn-danger'
+                                    style={{
+                                      padding: "9px",
+                                    }}
+                                    onClick={() => {
+                                      deleteCompany(company._id);
+                                    }}>
+                                    Delete
                                   </button>
                                 </td>
                               </tr>

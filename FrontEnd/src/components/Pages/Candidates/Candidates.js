@@ -7,30 +7,35 @@ import {
   getUserDetailsByID,
 } from "../../../actions/adminActions";
 import { CSVLink } from "react-csv";
+
 import Pagination from "@material-ui/lab/Pagination";
+
 import axios from "axios";
 
 const useFilterData = (fItems, config = null) => {
   const [filterConfig, setFilterConfig] = useState(config);
 
   const filterItems = useMemo(() => {
-    let filterableItems = [...fItems];
+    let filterableItems = fItems && [...fItems];
     if (filterConfig !== null) {
       filterableItems = filterableItems.filter((user) => {
         if (
           user.name.includes(filterConfig.key) ||
           user.email.includes(filterConfig.key)
         ) {
+          console.log(user);
           return user;
         }
       });
     }
+    // console.log(filterableItems.length, filterableItems);
     return filterableItems;
   }, [fItems, filterConfig]);
 
   const requestFilter = (key) => {
     setFilterConfig({ key });
   };
+  // console.log(filterItems.length, filterItems);
   return { fItems: filterItems, requestFilter, filterConfig };
 };
 
@@ -38,7 +43,7 @@ const useSortableData = (items, config = null) => {
   const [sortCoonfig, setSortConfig] = useState(config);
 
   const sortedItems = useMemo(() => {
-    let sortableItems = [...items];
+    let sortableItems = items && [...items];
     if (sortCoonfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortCoonfig.key] < b[sortCoonfig.key]) {
@@ -84,6 +89,7 @@ const Candidates = () => {
   const history = useHistory();
   const { fItems, requestFilter, filterConfig } = useFilterData(candidatesArr);
 
+  console.log(fItems);
   const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
   const [nameFilter, setNameFilter] = useState("");
@@ -153,6 +159,7 @@ const Candidates = () => {
                     id='exampleFormControlSelect2'
                     placeholder='Name'
                     value={nameFilter}
+                    autoComplete={false}
                     onChange={(e) => {
                       setNameFilter(e.target.value);
                       requestFilter(e.target.value);
@@ -163,6 +170,7 @@ const Candidates = () => {
                     id='exampleFormControlSelect2'
                     placeholder='Email'
                     value={emailFilter}
+                    autoComplete={false}
                     onChange={(e) => {
                       setEmailFilter(e.target.value);
                       requestFilter(e.target.value);
@@ -172,6 +180,7 @@ const Candidates = () => {
                     className='form-control col-sm-2'
                     id='exampleFormControlSelect2'
                     placeholder='Number'
+                    autoComplete={false}
                     value={numberFilter}
                     onChange={(e) => {
                       setNumberFilter(e.target.value);
@@ -191,17 +200,11 @@ const Candidates = () => {
                       count={Math.ceil(
                         allCandidates && allCandidates.length / 10
                       )}
-                      onChange={(e) => {
-                        console.log(e.target.textContent);
-                        if (e.target.textContent === "") {
-                          console.log(e.target.textContent);
-                          var no = parseInt(pageNo);
-                          setPageNo(no + 1);
-                        } else {
-                          setPageNo(e.target.textContent);
-                        }
+                      onChange={(e, page) => {
+                        setPageNo(page);
                       }}
                     />
+
                     <table className='table'>
                       <thead>
                         <tr>
@@ -295,14 +298,11 @@ const Candidates = () => {
                                         padding: "9px",
                                         paddingLeft: "10px",
                                         paddingRight: "10px",
-                                        backgroundColor: user.banAccount
-                                          ? "green"
-                                          : "red",
                                       }}
                                       onClick={() => {
                                         banUser(user._id);
                                       }}>
-                                      {user.banAccount ? "Banned" : "Block"}
+                                      Block
                                     </button>
                                   </td>
                                 </tr>
@@ -315,7 +315,7 @@ const Candidates = () => {
                               <tr key={Math.random()}>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
-                                <td>{user.number}</td>
+                                <td>{user.number.toString()}</td>
                                 <td>Location</td>
                                 <td>
                                   <button

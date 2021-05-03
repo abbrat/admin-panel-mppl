@@ -13,11 +13,11 @@ const EditEmployer = (props) => {
     JSON.parse(localStorage.getItem("company"))
   );
 
+  console.log(typeof company.OtherOffices);
+
   console.log(company.OtherOffices);
 
-  const [locationArray, setLocationArray] = useState(
-    company.OtherOffices || []
-  );
+  const [locationArray, setLocationArray] = useState(company.OtherOffices);
 
   const [locationVal, setLocationVal] = useState("");
 
@@ -58,6 +58,8 @@ const EditEmployer = (props) => {
   };
 
   const submitHandler = async () => {
+    const locations = JSON.stringify(locationArray);
+
     const formData = new FormData();
     formData.append("CompanyName", CompanyName);
     formData.append("CompanyDescription", CompanyDescription);
@@ -67,8 +69,9 @@ const EditEmployer = (props) => {
     formData.append("Website", Website);
     formData.append("Validity", Validity);
     formData.append("Logo", Logo);
-    formData.append("OtherOffices", locationArray);
-    console.log(FormData);
+    formData.append("OtherOffices", locations);
+
+    console.log(formData);
     setSaved(await updateCompanyById(formData, company._id));
     if (saved) {
       history.push("/employers");
@@ -287,7 +290,8 @@ const EditEmployer = (props) => {
                                       onChange={(e) => {
                                         setLocationVal(e.target.value);
                                       }}
-                                      placeholder='Add user'
+                                      placeholder='Add Locations'
+                                      disabled={!edit}
                                     />
                                   </div>
                                 </div>
@@ -354,7 +358,14 @@ const EditEmployer = (props) => {
                       class='btn btn-primary mr-2'>
                       {!edit ? "Submit" : "Save"}
                     </button>
-                    <button class='btn btn-light'>Cancel</button>
+                    <button
+                      class='btn btn-light'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        history.push("/employers");
+                      }}>
+                      Cancel
+                    </button>
                   </form>
                 </div>
               </div>

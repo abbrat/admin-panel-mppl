@@ -136,10 +136,27 @@ export const deleteJobByID = async (id) => {
   }
 };
 
+export const deleteCompanyByID = async (id) => {
+  try {
+    const res = await axios.delete(URL + "/api/company/delete/" + id);
+
+    if (res.data.msg === "Company Deleted!") {
+      makeToast("success", "Success");
+      return true;
+    }
+  } catch (error) {
+    console.log(error.message);
+    makeToast("error", "Error");
+    return false;
+  }
+};
+
 export const getAllJobs = async () => {
   try {
     const res = await axios.get(URL + "/api/jobs/all");
-    return res.data;
+    if (res.data.status === "success") {
+      return res.data.mJobs;
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -241,10 +258,12 @@ export const updateCompanyById = async (formData, id) => {
   }
 };
 
-export const getAllCompanies = () => async (dispatch) => {
+export const getAllCompanies = async () => {
   try {
     const res = await axios.get(URL + "/api/company/all");
-    dispatch({ type: GET_ALL_COMPANIES, payload: res.data });
+    if (res.data.status === "success") {
+      return res.data.cmp;
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -268,14 +287,18 @@ export const updateAdminById = async (id) => {
         "x-auth-token": localStorage.getItem("x-auth-token"),
       },
     };
+
+    console.log(localStorage.getItem("x-auth-token"));
     console.log(URL + "/api/admin/update/" + id);
     const res = await axios.patch(URL + "/api/admin/update/" + id, config);
+
+    console.log(res);
 
     if (res.data.msg) {
       return makeToast("error", res.data.msg);
     } else if (res.data.success) {
       console.log(res.data.success);
-      makeToast("error", res.data.success);
+      makeToast("Success", res.data.success);
       return true;
     }
   } catch (error) {
@@ -386,7 +409,7 @@ export const updateUserById = async (formData, id) => {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.put(
+    const res = await axios.patch(
       URL + "/api/user/update/" + id,
       formData,
       config

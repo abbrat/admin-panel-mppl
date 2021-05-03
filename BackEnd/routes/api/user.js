@@ -156,7 +156,7 @@ var fileUpload = upload.fields([
   { name: "videoResume", maxCount: 1 },
 ]);
 
-router.put("/update/:id", async (req, res) => {
+router.patch("/update/:id", fileUpload, async (req, res) => {
   const {
     name,
     email,
@@ -169,6 +169,8 @@ router.put("/update/:id", async (req, res) => {
     maritalStatus,
     subscription,
     preferedWorkLocation,
+    languages,
+    skillSet,
   } = req.body;
   const userFields = {};
   var user = await User.findById(req.params.id);
@@ -187,8 +189,14 @@ router.put("/update/:id", async (req, res) => {
     if (dob) userFields.dob = dob;
     if (maritalStatus) userFields.maritalStatus = maritalStatus;
     if (subscription) userFields.subscription = subscription;
-    if (preferedWorkLocation)
-      userFields.preferedWorkLocation = preferedWorkLocation;
+    if (preferedWorkLocation) {
+      userFields.preferedWorkLocation = JSON.parse(preferedWorkLocation);
+    }
+    if (languages) userFields.languages = JSON.parse(languages);
+    if (skillSet) userFields.skillSet = JSON.parse(skillSet);
+
+    console.log(userFields);
+
     // userFields.resume = `http://${req.header.host}/Resume/${req.files.resume[0].filename}`;
     // userFields.videoResume = `http://${req.headers.host}/Resume/${req.files.videoResume[0].filename}`;
     user = await User.findOneAndUpdate(
@@ -196,6 +204,11 @@ router.put("/update/:id", async (req, res) => {
       { $set: userFields },
       { new: true }
     );
+
+    if (!user) {
+      res.json({ status: "failure" });
+    }
+
     res.json({ msg: "User Updated", user: user });
   } catch (error) {
     console.log(error.message);

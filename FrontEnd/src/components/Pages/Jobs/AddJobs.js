@@ -94,12 +94,13 @@ const AddJobs = (props) => {
         "http://localhost:5000/api/company/details/" + id
       );
       console.log(res);
-      setContactEmail(res.data.CompanyEmail);
-      setContactNumber(parseInt(res.data.CompanyContact));
-      setLogo(res.data.Logo);
-      setAboutCompany(res.data.AboutCompany);
-      setCompanyHireRate(res.data.CompanyHireRate);
-      setCompanyMemberSince(res.data.JoiningDate);
+      setContactEmail(res.data.CompanyEmail || "");
+      setContactNumber(parseInt(res.data.CompanyContact) || "");
+      setLogo(res.data.Logo || "");
+      setAboutCompany(res.data.AboutCompany || "");
+      setCompanyHireRate(res.data.CompanyHireRate || "");
+      setCompanyMemberSince(res.data.JoiningDate || "");
+      setCompanyMemberSince(res.data.JoiningDate || "");
       console.log(res.data);
       let arr = [];
       arr = res.data.OtherOffices;
@@ -154,9 +155,12 @@ const AddJobs = (props) => {
 
     const jobInputArray = Object.keys(job);
 
+    console.log(job);
+
     const isJobInputEmptpy = jobInputArray.every((jobInput) => {
       return job[jobInput].length !== 0;
     });
+    console.log(isJobInputEmptpy);
 
     if (!isJobInputEmptpy) {
       return makeToast("error", "Please add all the fields");
@@ -169,7 +173,7 @@ const AddJobs = (props) => {
 
     if (create) {
       makeToast("success", "Success");
-      history.push("/posted-jobs");
+      history.push("/pending-jobs");
     } else {
       makeToast("error", "Error");
       // history.push("/posted-jobs");
@@ -405,7 +409,7 @@ const AddJobs = (props) => {
                           </label>
                           <div class='col-sm-9'>
                             <input
-                              type='text'
+                              type='email'
                               required={true}
                               value={ContactEmail}
                               onChange={(e) => {

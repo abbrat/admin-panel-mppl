@@ -48,7 +48,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   preferedWorkLocation: {
-    type: String,
+    type: Array,
+  },
+  skillSet: {
+    type: Array,
+  },
+  languages: {
+    type: Array,
   },
   maritalStatus: {
     type: String,

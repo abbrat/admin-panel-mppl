@@ -51,30 +51,27 @@ const EditJob = (props) => {
 
   const submitHandler = async () => {
     console.log("fdsf", jobObj._id);
-    setSaved(
-      await updateJobById(
-        {
-          CompanyHireRate,
-          CompanyName,
-          Desgination,
-          ContactEmail,
-          ContactNumber,
-          ContactPerson,
-          JobTitle,
-          JobType,
-          Description,
-          SalaryRange,
-          PreviousExp,
-          Category,
-        },
-        jobObj._id
-      )
+
+    const isSaved = await updateJobById(
+      {
+        CompanyHireRate,
+        CompanyName,
+        Desgination,
+        ContactEmail,
+        ContactNumber,
+        ContactPerson,
+        JobTitle,
+        JobType,
+        Description,
+        SalaryRange,
+        PreviousExp,
+        Category,
+      },
+      jobObj._id
     );
 
-    if (saved) {
-      history.push("/posted-jobs");
-    } else {
-      history.push("/posted-jobs");
+    if (isSaved) {
+      history.goBack();
     }
   };
 

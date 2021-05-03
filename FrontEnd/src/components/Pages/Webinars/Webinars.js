@@ -70,11 +70,10 @@ const useSortableData = (items, config = null) => {
   return { items: sortedItems, requestSort, sortCoonfig };
 };
 
-const Webinars = (props) => {
+const Webinars = () => {
   const [arr, setArr] = useState([]);
   const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
-  const [page, setPage] = useState();
 
   const { items, requestSort, sortCoonfig } = useSortableData(arr);
 
@@ -117,6 +116,8 @@ const Webinars = (props) => {
         });
       });
     }
+    await gettingAllWebinars();
+    await getWebinars();
   };
 
   useEffect(() => {
@@ -210,15 +211,8 @@ const Webinars = (props) => {
                       variant='outlined'
                       shape='rounded'
                       count={Math.ceil(webinars && webinars.length / 10)}
-                      onChange={(e) => {
-                        console.log("check", e.target.textContent);
-                        console.log("pageNo", pageNo);
-                        if (e.target.textContent === "") {
-                          var no = parseInt(pageNo);
-                          setPageNo(no + 1);
-                        } else {
-                          setPageNo(e.target.textContent);
-                        }
+                      onChange={(e, page) => {
+                        setPageNo(page);
                       }}
                     />
 

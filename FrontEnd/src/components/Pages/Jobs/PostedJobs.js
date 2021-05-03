@@ -72,7 +72,7 @@ const useSortableData = (items, config = null) => {
     let direction = "ascending";
     if (
       sortCoonfig &&
-      sortCoonfig.key == key &&
+      sortCoonfig.key === key &&
       sortCoonfig.direction === "ascending"
     ) {
       direction = "descending";
@@ -112,6 +112,7 @@ const PostedJobs = (props) => {
       const res = await axios.get(
         "http://localhost:5000/api/jobs/users/" + pageNo + "/" + perPage
       );
+      console.log(res);
       if (res.data.jobs) {
         return setArr(res.data.jobs);
       }
@@ -122,8 +123,10 @@ const PostedJobs = (props) => {
 
   const gettingAllJobs = async () => {
     const jobs = await getAllJobs();
-    console.log(jobs);
-    await setAllJobs(jobs);
+    if (jobs) {
+      console.log(jobs);
+      await setAllJobs(jobs);
+    }
   };
 
   const deleteJobs = async (id) => {
@@ -136,6 +139,8 @@ const PostedJobs = (props) => {
           });
         });
       }
+      await gettingAllJobs();
+      await getJobs();
     } catch (error) {
       console.log(error);
     }
@@ -148,7 +153,7 @@ const PostedJobs = (props) => {
   useEffect(() => {
     getJobs();
     // setJobs(arr);
-  }, [arr]);
+  }, [pageNo]);
 
   useEffect(() => {
     if (nameFilter !== "" || titleFilter !== "") {
@@ -193,6 +198,7 @@ const PostedJobs = (props) => {
   // };
 
   const resetFilter = () => {
+    setTitleFilter("");
     setNameFilter("");
   };
 
@@ -205,55 +211,53 @@ const PostedJobs = (props) => {
     <div>
       <div class='sidebar-light'>
         <div class='container-scroller'>
-          <Navbar />
-          <div class='container-fluid page-body-wrapper'>
-            <div class='main-panel'>
-              <div class='content-wrapper'>
-                <div class='card'>
-                  <div class='card-body'>
-                    <h4 class='card-title'>Posted Jobs</h4>
-                    <button
-                      type='button'
-                      class='btn btn-primary btn-rounded btn-fw'
-                      style={{ marginBottom: 10 }}
-                      onClick={() => {
-                        onOpenModal();
-                      }}>
-                      Filter
-                    </button>
-                    <button
-                      type='button'
-                      class='btn btn-danger btn-rounded btn-fw'
-                      style={{ marginBottom: 10, marginLeft: 10 }}
-                      onClick={() => {
-                        resetFilter();
-                      }}>
-                      Reset Filters
-                    </button>
-                    {/*<CSVLink
+          <div class='main-panel'>
+            <div class='content-wrapper'>
+              <div class='card'>
+                <div class='card-body'>
+                  <h4 class='card-title'>Posted Jobs</h4>
+                  <button
+                    type='button'
+                    class='btn btn-primary btn-rounded btn-fw'
+                    style={{ marginBottom: 10 }}
+                    onClick={() => {
+                      onOpenModal();
+                    }}>
+                    Filter
+                  </button>
+                  <button
+                    type='button'
+                    class='btn btn-danger btn-rounded btn-fw'
+                    style={{ marginBottom: 10, marginLeft: 10 }}
+                    onClick={() => {
+                      resetFilter();
+                    }}>
+                    Reset Filters
+                  </button>
+                  {/*<CSVLink
                       data={props.jobs}
                       filename={"Jobs_" + Date.now() + ".csv"}
                       className='btn btn-primary btn-rounded btn-fw'
                       style={{ marginLeft: 10, marginBottom: 10 }}>
                       Export to CSV
                     </CSVLink> */}
-                    <br></br>
-                    <button
-                      type='button'
-                      class='btn btn-primary btn-rounded btn-fw'
-                      style={{ marginBottom: 10, marginLeft: 10 }}
-                      onClick={() => {
-                        requestSort("CompanyName");
+                  <br></br>
+                  <button
+                    type='button'
+                    class='btn btn-primary btn-rounded btn-fw'
+                    style={{ marginBottom: 10, marginLeft: 10 }}
+                    onClick={() => {
+                      requestSort("CompanyName");
+                      setFilter(true);
+                      if (filter) {
+                        setFilter(false);
+                      } else {
                         setFilter(true);
-                        if (filter) {
-                          setFilter(false);
-                        } else {
-                          setFilter(true);
-                        }
-                      }}>
-                      Company
-                    </button>
-                    {/* <code>Sort By</code>
+                      }
+                    }}>
+                    Company
+                  </button>
+                  {/* <code>Sort By</code>
                     <button
                       type="button"
                       class="btn btn-primary btn-rounded btn-fw"
@@ -306,211 +310,127 @@ const PostedJobs = (props) => {
                     >
                       Validity
                     </button> */}
-                    <div class='form-group'>
-                      <div class='form-group row'>
-                        <input
-                          type='text'
-                          class='form-control col-sm-2'
-                          id='exampleFormControlSelect2'
-                          placeholder='Job Title'
-                          value={titleFilter}
-                          onChange={(e) => {
-                            setTitleFilter(e.target.value);
-                            requestFilter(e.target.value);
-                          }}></input>
-                        <input
-                          type='text'
-                          class='form-control col-sm-2'
-                          id='exampleFormControlSelect2'
-                          placeholder='Company Name'
-                          value={nameFilter}
-                          onChange={(e) => {
-                            setNameFilter(e.target.value);
-                            requestFilter(e.target.value);
-                          }}></input>
-                        <input
-                          type='text'
-                          class='form-control col-sm-2'
-                          id='exampleFormControlSelect2'
-                          placeholder='Openings'></input>
-                        <input
-                          type='text'
-                          class='form-control col-sm-2'
-                          id='exampleFormControlSelect2'
-                          placeholder='Published On'></input>
-                        <input
-                          type='text'
-                          class='form-control col-sm-2'
-                          id='exampleFormControlSelect2'
-                          placeholder='Validity'></input>
-                      </div>
+                  <div class='form-group'>
+                    <div class='form-group row'>
+                      <input
+                        type='text'
+                        class='form-control col-sm-2'
+                        id='exampleFormControlSelect2'
+                        placeholder='Job Title'
+                        value={titleFilter}
+                        onChange={(e) => {
+                          setTitleFilter(e.target.value);
+                          requestFilter(e.target.value);
+                        }}></input>
+                      <input
+                        type='text'
+                        class='form-control col-sm-2'
+                        id='exampleFormControlSelect2'
+                        placeholder='Company Name'
+                        value={nameFilter}
+                        onChange={(e) => {
+                          setNameFilter(e.target.value);
+                          requestFilter(e.target.value);
+                        }}></input>
                     </div>
-                    <DateRangePicker
-                      ranges={[selectionRange]}
-                      onChange={(e) => {
-                        console.log(e);
-                        if (e.selection.startDate) {
-                          setSelectionRange({
-                            startDate: e.selection.startDate,
-                          });
-                        }
+                  </div>
+                  <DateRangePicker
+                    ranges={[selectionRange]}
+                    onChange={(e) => {
+                      console.log(e);
+                      if (e.selection.startDate) {
+                        setSelectionRange({
+                          startDate: e.selection.startDate,
+                        });
+                      }
 
-                        if (e.selection.endDate) {
-                          setSelectionRange({
-                            endDate: e.selection.endDate,
-                          });
-                        }
-                      }}></DateRangePicker>
+                      if (e.selection.endDate) {
+                        setSelectionRange({
+                          endDate: e.selection.endDate,
+                        });
+                      }
+                    }}></DateRangePicker>
 
-                    <div class='row'>
-                      <div class='col-12'>
-                        <div class='table-responsive'>
-                          <Pagination
-                            className='my-3'
-                            siblingCount={1}
-                            boundaryCount={1}
-                            variant='outlined'
-                            shape='rounded'
-                            count={Math.ceil(allJobs && allJobs.length / 10)}
-                            onChange={(e) => {
-                              if (e.target.textContent === "") {
-                                var no = parseInt(pageNo);
-                                setPageNo(no + 1);
-                              } else {
-                                setPageNo(e.target.textContent);
-                              }
-                            }}
-                          />
-                          <table class='table'>
-                            <thead>
-                              <tr>
-                                <th
-                                  onClick={() => {
-                                    if (items.length === 0) {
-                                      return;
-                                    }
-                                    requestSort("JobTitle");
+                  <div class='row'>
+                    <div class='col-12'>
+                      <div class='table-responsive'>
+                        <Pagination
+                          className='my-3'
+                          siblingCount={1}
+                          boundaryCount={1}
+                          variant='outlined'
+                          shape='rounded'
+                          count={Math.ceil(allJobs && allJobs.length / 10)}
+                          onChange={(e, page) => {
+                            setPageNo(page);
+                          }}
+                        />
+                        <table class='table'>
+                          <thead>
+                            <tr>
+                              <th
+                                onClick={() => {
+                                  if (items.length === 0) {
+                                    return;
+                                  }
+                                  requestSort("JobTitle");
+                                  setFilter(true);
+                                  if (filter) {
+                                    setFilter(false);
+                                  } else {
                                     setFilter(true);
-                                    if (filter) {
-                                      setFilter(false);
-                                    } else {
-                                      setFilter(true);
-                                    }
-                                  }}>
-                                  Title
-                                </th>
-                                <th
-                                  onClick={() => {
-                                    if (items.length === 0) {
-                                      return;
-                                    }
-                                    requestSort("CompanyName");
+                                  }
+                                }}>
+                                Title
+                              </th>
+                              <th
+                                onClick={() => {
+                                  if (items.length === 0) {
+                                    return;
+                                  }
+                                  requestSort("CompanyName");
+                                  setFilter(true);
+                                  if (filter) {
+                                    setFilter(false);
+                                  } else {
                                     setFilter(true);
-                                    if (filter) {
-                                      setFilter(false);
-                                    } else {
-                                      setFilter(true);
-                                    }
-                                  }}>
-                                  Company
-                                </th>
-                                <th
-                                  onClick={() => {
-                                    // onOpenModal();
-                                    alert("Sorting to be Set!");
-                                  }}>
-                                  Openings
-                                </th>
-                                <th
-                                  onClick={() => {
-                                    if (items.length === 0) {
-                                      return;
-                                    }
-                                    requestSort("date");
+                                  }
+                                }}>
+                                Company
+                              </th>
+                              <th
+                                onClick={() => {
+                                  // onOpenModal();
+                                  alert("Sorting to be Set!");
+                                }}>
+                                Openings
+                              </th>
+                              <th
+                                onClick={() => {
+                                  if (items.length === 0) {
+                                    return;
+                                  }
+                                  requestSort("date");
+                                  setFilter(true);
+                                  if (filter) {
+                                    setFilter(false);
+                                  } else {
                                     setFilter(true);
-                                    if (filter) {
-                                      setFilter(false);
-                                    } else {
-                                      setFilter(true);
-                                    }
-                                  }}>
-                                  Published On
-                                </th>
-                                <th>Validity</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {!filter ? (
-                                items.length === 0 ? (
-                                  <p>Empty</p>
-                                ) : (
-                                  items.map((job) => {
-                                    return (
-                                      <tr>
-                                        <td>{job.JobTitle}</td>
-                                        <td>{job.CompanyName}</td>
-                                        <td>{job.CompanyName}</td>
-                                        <td>
-                                          <Moment format='DD/MM/YYYY'>
-                                            {job.date}
-                                          </Moment>
-                                        </td>
-                                        <td>{job.JobTitle}</td>
-                                        <td>
-                                          <label class='badge badge-success'>
-                                            Active
-                                          </label>
-                                        </td>
-                                        {/* <td>
-                                        <button
-                                          class="btn btn-primary btn-rounded"
-                                          style={{
-                                            padding: "10px",
-                                            paddingLeft: "15px",
-                                            paddingRight: "15px",
-                                          }}
-                                        >
-                                          View
-                                        </button>
-                                      </td> */}
-                                        <td>
-                                          <button
-                                            class='btn  btn-rounded btn-dark'
-                                            onClick={() => {
-                                              localStorage.setItem(
-                                                "selectedJob",
-                                                JSON.stringify(job)
-                                              );
-                                              history.push("/edit-jobs");
-                                            }}
-                                            style={{
-                                              padding: "9px",
-                                              marginRight: "5px",
-                                              paddingLeft: "15px",
-                                              paddingRight: "15px",
-                                            }}>
-                                            Edit
-                                          </button>
-                                          <button
-                                            class='btn  btn-rounded btn-danger'
-                                            style={{
-                                              padding: "9px",
-                                            }}
-                                            onClick={() => {
-                                              deleteJobByID(job._id);
-                                            }}>
-                                            Delete
-                                          </button>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })
-                                )
+                                  }
+                                }}>
+                                Published On
+                              </th>
+                              <th>Validity</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {!filter ? (
+                              items.length === 0 ? (
+                                <p>Empty</p>
                               ) : (
-                                fItems &&
-                                fItems.map((job) => {
+                                items.map((job) => {
                                   return (
                                     <tr>
                                       <td>{job.JobTitle}</td>
@@ -528,17 +448,17 @@ const PostedJobs = (props) => {
                                         </label>
                                       </td>
                                       {/* <td>
-                                      <button
-                                        class="btn btn-primary btn-rounded"
-                                        style={{
-                                          padding: "10px",
-                                          paddingLeft: "15px",
-                                          paddingRight: "15px",
-                                        }}
-                                      >
-                                        View
-                                      </button>
-                                    </td> */}
+                                        <button
+                                          class="btn btn-primary btn-rounded"
+                                          style={{
+                                            padding: "10px",
+                                            paddingLeft: "15px",
+                                            paddingRight: "15px",
+                                          }}
+                                        >
+                                          View
+                                        </button>
+                                      </td> */}
                                       <td>
                                         <button
                                           class='btn  btn-rounded btn-dark'
@@ -559,12 +479,11 @@ const PostedJobs = (props) => {
                                         </button>
                                         <button
                                           class='btn  btn-rounded btn-danger'
-                                          onClick={() => {
-                                            console.log("Deleted");
-                                            deleteJobs(job._id);
-                                          }}
                                           style={{
                                             padding: "9px",
+                                          }}
+                                          onClick={() => {
+                                            deleteJobByID(job._id);
                                           }}>
                                           Delete
                                         </button>
@@ -572,27 +491,91 @@ const PostedJobs = (props) => {
                                     </tr>
                                   );
                                 })
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
+                              )
+                            ) : (
+                              fItems &&
+                              fItems.map((job) => {
+                                return (
+                                  <tr>
+                                    <td>{job.JobTitle}</td>
+                                    <td>{job.CompanyName}</td>
+                                    <td>{job.CompanyName}</td>
+                                    <td>
+                                      <Moment format='DD/MM/YYYY'>
+                                        {job.date}
+                                      </Moment>
+                                    </td>
+                                    <td>{job.JobTitle}</td>
+                                    <td>
+                                      <label class='badge badge-success'>
+                                        Active
+                                      </label>
+                                    </td>
+                                    {/* <td>
+                                      <button
+                                        class="btn btn-primary btn-rounded"
+                                        style={{
+                                          padding: "10px",
+                                          paddingLeft: "15px",
+                                          paddingRight: "15px",
+                                        }}
+                                      >
+                                        View
+                                      </button>
+                                    </td> */}
+                                    <td>
+                                      <button
+                                        class='btn  btn-rounded btn-dark'
+                                        onClick={() => {
+                                          localStorage.setItem(
+                                            "selectedJob",
+                                            JSON.stringify(job)
+                                          );
+                                          history.push("/edit-jobs");
+                                        }}
+                                        style={{
+                                          padding: "9px",
+                                          marginRight: "5px",
+                                          paddingLeft: "15px",
+                                          paddingRight: "15px",
+                                        }}>
+                                        Edit
+                                      </button>
+                                      <button
+                                        class='btn  btn-rounded btn-danger'
+                                        onClick={() => {
+                                          console.log("Deleted");
+                                          deleteJobs(job._id);
+                                        }}
+                                        style={{
+                                          padding: "9px",
+                                        }}>
+                                        Delete
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            )}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <footer class='footer'>
-                <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-                  <span class='text-muted text-center text-sm-left d-block d-sm-inline-block'>
-                    Copyright © 2021{" "}
-                    <a href='https://www.toodecimal.com' target='_blank'>
-                      Too Decimal
-                    </a>
-                    . All rights reserved.
-                  </span>
-                </div>
-              </footer>
             </div>
+            <footer class='footer'>
+              <div class='d-sm-flex justify-content-center justify-content-sm-between'>
+                <span class='text-muted text-center text-sm-left d-block d-sm-inline-block'>
+                  Copyright © 2021{" "}
+                  <a href='https://www.toodecimal.com' target='_blank'>
+                    Too Decimal
+                  </a>
+                  . All rights reserved.
+                </span>
+              </div>
+            </footer>
           </div>
         </div>
       </div>

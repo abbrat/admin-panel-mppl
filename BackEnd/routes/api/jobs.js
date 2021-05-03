@@ -9,9 +9,9 @@ const Company = require("../../models/Company");
 const moment = require("moment");
 const JobQuestions = require("../../models/JobQuestions");
 const SavedJobs = require("../../models/SavedJobs");
-sgMail.setApiKey(
-  "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"
-);
+// sgMail.setApiKey(
+//   "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"
+// );
 
 //@DESC Create Job
 router.post("/", async (req, res) => {
@@ -232,26 +232,26 @@ router.get("/approve/:id", auth, async (req, res) => {
           new: true,
         }
       );
-      const msg = {
-        to: job.ContactEmail,
-        from: "vedant.pruthi.io@gmail.com",
-        subject: "Job Approved",
-        text: "First Message via Send Grid",
-        html:
-          "<b>Hey there</b>" +
-          job.ContactPerson +
-          " Your Job is Approved and now Public to Everyone!" +
-          "<br>Thankyou For Using Mangalam Services",
-      };
+      // const msg = {
+      //   to: job.ContactEmail,
+      //   from: "vedant.pruthi.io@gmail.com",
+      //   subject: "Job Approved",
+      //   text: "First Message via Send Grid",
+      //   html:
+      //     "<b>Hey there</b>" +
+      //     job.ContactPerson +
+      //     " Your Job is Approved and now Public to Everyone!" +
+      //     "<br>Thankyou For Using Mangalam Services",
+      // };
 
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log("Email Sent", msg);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      // sgMail
+      //   .send(msg)
+      //   .then(() => {
+      //     console.log("Email Sent", msg);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
       return res.json({ msg: "Job Approved", data: job });
     }
   } catch (error) {
@@ -280,7 +280,6 @@ router.get("/featuredJob", async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const jobs = await Jobs.find();
-    return res.json({ jobs });
     if (jobs.length == 0) {
       return res.json({ msg: "No Jobs Posted Yet" });
     }
@@ -292,7 +291,7 @@ router.get("/all", async (req, res) => {
     if (mJobs.length == 0) {
       return res.json({ msg: "No Jobs" });
     }
-    res.json(mJobs);
+    res.json({ status: "success", mJobs });
   } catch (error) {
     console.log(error.message);
   }
@@ -372,28 +371,28 @@ router.get("/apply/:id", auth, async (req, res) => {
 
           const application = new Applications(applicationFields);
           await application.save();
-          const msg = {
-            to: user.email,
-            from: "vedant.pruthi.io@gmail.com",
-            subject: "Job Applied Successfully",
-            text: "First Message via Send Grid",
-            html:
-              "<b>Hey there</b>" +
-              user.name +
-              " Thankyou for Applyying" +
-              "Your Application ID is :" +
-              application.id +
-              "<br>Thankyou For Using Mangalam Services",
-          };
+          // const msg = {
+          //   to: user.email,
+          //   from: "vedant.pruthi.io@gmail.com",
+          //   subject: "Job Applied Successfully",
+          //   text: "First Message via Send Grid",
+          //   html:
+          //     "<b>Hey there</b>" +
+          //     user.name +
+          //     " Thankyou for Applyying" +
+          //     "Your Application ID is :" +
+          //     application.id +
+          //     "<br>Thankyou For Using Mangalam Services",
+          // };
 
-          sgMail
-            .send(msg)
-            .then(() => {
-              console.log("Email Sent", msg);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          // sgMail
+          //   .send(msg)
+          //   .then(() => {
+          //     console.log("Email Sent", msg);
+          //   })
+          //   .catch((error) => {
+          //     console.log(error);
+          //   });
 
           return res.json({
             msg: "Job Applied SuccessFully",
@@ -618,8 +617,11 @@ router.get("/users/:page/:perPage", async (req, res) => {
     const jobs = await Jobs.find({ jobStatus: "Approved" })
       .skip(skip)
       .limit(limit);
+    if (jobs) {
+      res.json({ status: "success", jobs });
+    }
 
-    res.json({ jobs });
+    res.json({ status: "failure" });
   } catch (error) {
     console.log(error.message);
   }

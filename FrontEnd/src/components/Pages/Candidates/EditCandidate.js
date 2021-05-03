@@ -25,13 +25,15 @@ const EditCandidate = (props) => {
   const [gender, setGender] = useState(user.user.gender || "");
   const [address, setAddress] = useState(user.user.address || "");
 
-  const [workLocationArray, setLocationArray] = useState([]);
+  const [workLocationArray, setLocationArray] = useState(
+    user.user.preferedWorkLocation
+  );
   const [workLocationVal, setWorkLocationVal] = useState("");
 
-  const [skillArray, setSkillArray] = useState([]);
+  const [skillArray, setSkillArray] = useState(user.user.skillSet);
   const [skillVal, setSkillVal] = useState("");
 
-  const [languageArray, setLanguageArray] = useState([]);
+  const [languageArray, setLanguageArray] = useState(user.user.languages);
   const [langVal, setLangval] = useState("");
 
   const [about, setAbout] = useState(user.user.about || "");
@@ -43,9 +45,9 @@ const EditCandidate = (props) => {
   const [subscription, setSubscription] = useState(
     user.user.subscription || ""
   );
-  const [preferedWorkLocation, setPreferedWorkLocation] = useState(
-    user.user.email || ""
-  );
+  // const [preferedWorkLocation, setPreferedWorkLocation] = useState(
+  //   user.user.email || ""
+  // );
   const [resume, setResume] = useState(null);
   const [videoResume, setVideoResume] = useState(null);
   const [saved, setSaved] = useState();
@@ -73,10 +75,20 @@ const EditCandidate = (props) => {
     return formatted_date;
   }
 
+  console.log(user.user);
+
   const dataSubmit = async () => {
     // console.log("Location", workLocationArray);
     // console.log("Skills", skillArray);
     // console.log("Language", languageArray);
+
+    const locations = JSON.stringify(workLocationArray);
+    const skills = JSON.stringify(skillArray);
+    const languages = JSON.stringify(languageArray);
+
+    console.log(typeof locations, locations);
+    console.log(typeof skills, skills);
+    console.log(typeof languages, languages);
 
     const formData = new FormData();
     formData.append("name", name);
@@ -88,32 +100,22 @@ const EditCandidate = (props) => {
     formData.append("linkdin", linkdin);
     formData.append("dob", dob);
     formData.append("maritalStatus", maritalStatus);
-    // formData.append("subscription", subscription);
-    // formData.append("subscription", subscription);
+    formData.append("subscription", subscription);
+    formData.append("preferedWorkLocation", locations);
+    formData.append("skillSet", skills);
+    formData.append("languages", languages);
     formData.append("videoResume", videoResume);
     formData.append("resume", resume);
 
-    const isUserUpdated = await updateUserById(
-      {
-        name,
-        email,
-        number,
-        gender,
-        address,
-        about,
-        linkdin,
-        dob,
-        maritalStatus,
-        preferedWorkLocation: workLocationArray,
-      },
-      user.user._id
-    );
+    console.log(formData);
+
+    const isUserUpdated = await updateUserById(formData, user.user._id);
 
     console.log(isUserUpdated);
 
     if (isUserUpdated) {
       makeToast("success", "Updated");
-      // history.goBack();
+      history.push("/candidates");
     } else {
       makeToast("error", "Error");
     }
@@ -628,5 +630,5 @@ const EditCandidate = (props) => {
 };
 
 export default connect(null, {
-  updateUserById,
+  // updateUserById,
 })(EditCandidate);

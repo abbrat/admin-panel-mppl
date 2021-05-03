@@ -51,7 +51,7 @@ router.get("/all", async (req, res) => {
     if (cmp.length == 0) {
       return res.json({ msg: "No Companies Found!" });
     }
-    res.json(cmp);
+    res.json({ status: "success", cmp });
   } catch (error) {
     console.log(error.message);
   }
@@ -143,7 +143,7 @@ router.patch("/update/:id", upload.single("Logo"), async (req, res) => {
       companyFields.CompanyDescription = CompanyDescription;
     if (JoiningDate) companyFields.JoiningDate = JoiningDate;
     if (HeadOffice) companyFields.HeadOffice = HeadOffice;
-    if (OtherOffices) companyFields.OtherOffices = OtherOffices;
+    if (OtherOffices) companyFields.OtherOffices = JSON.parse(OtherOffices);
     if (Validity) companyFields.Validity = Validity;
     if (Website) companyFields.Website = Website;
     if (req.file) {

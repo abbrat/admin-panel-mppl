@@ -413,8 +413,8 @@ export const createCompany = (formData) => async (dispatch) => {
 
     const res = await axios.post(url + "/api/company/create", formData);
     if (
-      res.data.msg == "Company Created!" ||
-      res.data.msg == "Company Updated!"
+      res.data.msg === "Company Created!" ||
+      res.data.msg === "Company Updated!"
     ) {
       makeToast("success", "Success");
 

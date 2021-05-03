@@ -17,6 +17,10 @@ const AddNotes = (props) => {
   const [file, setFile] = useState(null);
 
   const dataSubmit = async () => {
+    if (!file || fileName === "" || fileAuthor === "") {
+      return makeToast("error", "Please add all the fields");
+    }
+
     const formData = new FormData();
     formData.append("fileName", fileName);
     formData.append("fileAuthor", fileAuthor);

@@ -263,6 +263,8 @@ router.post("/login", async (req, res) => {
 //@PUT Route
 //@DESC Update Admin Details
 router.patch("/update/:id", auth, async (req, res) => {
+
+
   const {
     name,
     designation,
@@ -280,6 +282,9 @@ router.patch("/update/:id", auth, async (req, res) => {
     if (number) adminFields.number = number;
     if (newPassword) adminFields.password = newPassword;
     var admin = await Admin.findById(req.params.id);
+
+    
+
     if (!admin) {
       return res.json({ msg: "No Admin Found" });
     }

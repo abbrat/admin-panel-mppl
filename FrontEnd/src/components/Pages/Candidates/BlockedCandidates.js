@@ -60,8 +60,8 @@ const BlockedCandidates = () => {
                             return (
                               <tr>
                                 <td>{user.name}</td>
-                                <td>New York</td>
-                                <td>$1500</td>
+                                <td>{user.number}</td>
+                                <td>{user.email}</td>
                                 <td>$3200</td>
                                 <td>
                                   <label class='badge badge-danger'>
