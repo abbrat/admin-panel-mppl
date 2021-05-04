@@ -3,8 +3,11 @@ import { Fragment } from "react";
 import { getInactiveEmployers } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
+import { useHistory } from "react-router";
 
 const InactiveEmployers = () => {
+  const history = useHistory();
+
   const [inactiveEmp, setInactiveEmp] = useState([]);
 
   const getJobs = async () => {
@@ -68,8 +71,11 @@ const InactiveEmployers = () => {
                                       paddingLeft: "15px",
                                       paddingRight: "15px",
                                     }}
-                                    onClick={(e) => {
-                                      e.preventDefault();
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: "/edit-employer",
+                                        state: emp,
+                                      });
                                     }}>
                                     View
                                   </button>

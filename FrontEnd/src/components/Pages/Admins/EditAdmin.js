@@ -6,11 +6,11 @@ import classes from "./Admin.module.css";
 import { updateAdminById } from "../../../actions/adminActions";
 import makeToast from "../../../Toaster";
 
-const EditAdmin = () => {
+const EditAdmin = (props) => {
   const [edit, setEdit] = useState(false);
   let [arr, setArr] = useState([]);
 
-  const selectedAdmin = JSON.parse(localStorage.getItem("selectedAdmin")) || "";
+  const selectedAdmin = props.location.state && props.location.state;
 
   const [name, setName] = useState(selectedAdmin.name || "");
   const [email, setEmail] = useState(selectedAdmin.email || "");

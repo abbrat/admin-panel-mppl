@@ -283,11 +283,10 @@ const Candidates = () => {
                                         paddingRight: "15px",
                                       }}
                                       onClick={() => {
-                                        localStorage.setItem(
-                                          "userSelected",
-                                          JSON.stringify(user)
-                                        );
-                                        history.push("/edit-candidate");
+                                        history.push({
+                                          pathname: "/edit-candidate",
+                                          state: user,
+                                        });
                                       }}>
                                       Edit
                                     </button>
@@ -329,30 +328,22 @@ const Candidates = () => {
                                   </button>
                                 </td>
                                 <td>
-                                  <a
-                                    href='/'
+                                  <button
+                                    className='btn  btn-rounded btn-dark'
+                                    style={{
+                                      padding: "9px",
+                                      marginRight: "5px",
+                                      paddingLeft: "15px",
+                                      paddingRight: "15px",
+                                    }}
                                     onClick={() => {
-                                      // localStorage.setItem(
-                                      //   "userSelected",
-                                      //   JSON.stringify(user)
-                                      // );
-                                      localStorage.setItem(
-                                        "userSelected",
-                                        JSON.stringify(user)
-                                      );
-                                      history.push("/edit-candidate");
+                                      history.push({
+                                        pathname: "/edit-candidate",
+                                        state: user,
+                                      });
                                     }}>
-                                    <button
-                                      className='btn  btn-rounded btn-dark'
-                                      style={{
-                                        padding: "9px",
-                                        marginRight: "5px",
-                                        paddingLeft: "15px",
-                                        paddingRight: "15px",
-                                      }}>
-                                      Edit
-                                    </button>
-                                  </a>
+                                    Edit
+                                  </button>
                                   <button
                                     className='btn  btn-rounded btn-danger'
                                     style={{

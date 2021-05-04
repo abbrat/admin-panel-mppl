@@ -9,37 +9,45 @@ import InputArray from "../Candidates/InputArray";
 
 const EditEmployer = (props) => {
   const [edit, setEdit] = useState(false);
-  const [company, setCompany] = useState(
-    JSON.parse(localStorage.getItem("company"))
+
+  const selectedCompany = props.location && props.location.state;
+
+  // console.log(typeof selectedCompany.OtherOffices);
+
+  // console.log(selectedCompany.OtherOffices);
+
+  const [locationArray, setLocationArray] = useState(
+    selectedCompany.OtherOffices || []
   );
-
-  console.log(typeof company.OtherOffices);
-
-  console.log(company.OtherOffices);
-
-  const [locationArray, setLocationArray] = useState(company.OtherOffices);
 
   const [locationVal, setLocationVal] = useState("");
 
-  const [CompanyName, setCompanyName] = useState(company.CompanyName || "");
-  const [CompanyEmail, setCompanyEmail] = useState(company.CompanyEmail || "");
+  const [CompanyName, setCompanyName] = useState(
+    selectedCompany.CompanyName || ""
+  );
+  const [CompanyEmail, setCompanyEmail] = useState(
+    selectedCompany.CompanyEmail || ""
+  );
   const [CompanyContact, setCompanyContact] = useState(
-    company.CompanyContact || ""
+    selectedCompany.CompanyContact || ""
   );
-  const [Website, setWebsite] = useState(company.Website || "");
+  const [Website, setWebsite] = useState(selectedCompany.Website || "");
   const [CompanyDescription, setCompanyDescription] = useState(
-    company.CompanyDescription || ""
+    selectedCompany.CompanyDescription || ""
   );
-  const [JoiningDate, setJoiningDate] = useState(company.JoiningDate || "");
-  const [Validity, setValidity] = useState(company.Validity || "");
-  const [HeadOffice, setHeadOffice] = useState(company.HeadOffice || "");
-  const [Latitude, setLatitude] = useState(company.Latitude || "");
-  const [Longitude, setLongitude] = useState(company.Longitude || "");
-  const [CIN, setCIN] = useState(company.CIN);
+  const [JoiningDate, setJoiningDate] = useState(
+    selectedCompany.JoiningDate || ""
+  );
+  const [Validity, setValidity] = useState(selectedCompany.Validity || "");
+  const [HeadOffice, setHeadOffice] = useState(
+    selectedCompany.HeadOffice || ""
+  );
+  const [Latitude, setLatitude] = useState(selectedCompany.Latitude || "");
+  const [Longitude, setLongitude] = useState(selectedCompany.Longitude || "");
+  const [CIN, setCIN] = useState(selectedCompany.CIN);
   const history = useHistory();
   const [saved, setSaved] = useState();
-  const [inputBox, setInputBox] = useState();
-  const [Logo, setLogo] = useState(company.Logo || "");
+  const [Logo, setLogo] = useState(selectedCompany.Logo || "");
 
   const uploadFile = (e) => {
     if (e.target.files[0] == null) {
@@ -72,11 +80,11 @@ const EditEmployer = (props) => {
     formData.append("OtherOffices", locations);
 
     console.log(formData);
-    setSaved(await updateCompanyById(formData, company._id));
+    setSaved(await updateCompanyById(formData, selectedCompany._id));
     if (saved) {
-      history.push("/employers");
+      history.goBack();
     } else {
-      history.push("/employers");
+      history.goBack();
     }
   };
 

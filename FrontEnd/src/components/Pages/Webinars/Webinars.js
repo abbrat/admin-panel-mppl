@@ -315,11 +315,10 @@ const Webinars = () => {
                                         paddingRight: "15px",
                                       }}
                                       onClick={() => {
-                                        localStorage.setItem(
-                                          "webinar",
-                                          JSON.stringify(webinar)
-                                        );
-                                        history.push("/edit-webinar");
+                                        history.push({
+                                          pathname: "/edit-webinar",
+                                          state: webinar,
+                                        });
                                       }}>
                                       Edit
                                     </button>
@@ -371,25 +370,22 @@ const Webinars = () => {
                                   </button>
                                 </td>
                                 <td>
-                                  <a
+                                  <button
+                                    className='btn  btn-rounded btn-dark'
+                                    style={{
+                                      padding: "9px",
+                                      marginRight: "5px",
+                                      paddingLeft: "15px",
+                                      paddingRight: "15px",
+                                    }}
                                     onClick={() => {
-                                      localStorage.setItem(
-                                        "webinar",
-                                        JSON.stringify(webinar)
-                                      );
-                                      history.push("/edit-webinar");
+                                      history.push({
+                                        pathname: "/edit-webinar",
+                                        state: webinar,
+                                      });
                                     }}>
-                                    <button
-                                      className='btn  btn-rounded btn-dark'
-                                      style={{
-                                        padding: "9px",
-                                        marginRight: "5px",
-                                        paddingLeft: "15px",
-                                        paddingRight: "15px",
-                                      }}>
-                                      Edit
-                                    </button>
-                                  </a>
+                                    Edit
+                                  </button>
                                   <button
                                     className='btn  btn-rounded btn-danger'
                                     style={{

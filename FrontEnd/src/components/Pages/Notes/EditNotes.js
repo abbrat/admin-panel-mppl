@@ -11,16 +11,17 @@ import DocViewer, { PDFRenderer, PNGRenderer } from "react-doc-viewer";
 
 const EditNotes = (props) => {
   const history = useHistory();
-  const [saved, setSaved] = useState();
-  const [notes, setNotes] = useState(JSON.parse(localStorage.getItem("notes")));
-  const [docs, setDocs] = useState([{ uri: notes.file }]);
 
-  // useEffect(() => {
-  //   setNotes(JSON.parse(localStorage.getItem("notes")));
-  // });
+  const selectedNote = props.location.state && props.location.state;
+
+  console.log(selectedNote);
+
+  const [saved, setSaved] = useState();
+  const [docs, setDocs] = useState([{ uri: selectedNote.file }]);
+
   const [edit, setEdit] = useState(false);
-  const [fileName, setFileName] = useState(notes.fileName || "");
-  const [fileAuthor, setFileAuthor] = useState(notes.fileAuthor || "");
+  const [fileName, setFileName] = useState(selectedNote.fileName || "");
+  const [fileAuthor, setFileAuthor] = useState(selectedNote.fileAuthor || "");
   const [file, setFile] = useState(null);
 
   const uploadFile = (e) => {
@@ -37,7 +38,7 @@ const EditNotes = (props) => {
     formData.append("fileAuthor", fileAuthor);
     formData.append("file", file);
 
-    setSaved(await updateNotesById(formData, notes._id));
+    setSaved(await updateNotesById(formData, selectedNote._id));
     if (saved) {
       history.goBack();
     } else {

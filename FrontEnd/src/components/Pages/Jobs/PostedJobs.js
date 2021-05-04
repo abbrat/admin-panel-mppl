@@ -441,7 +441,11 @@ const PostedJobs = (props) => {
                                           {job.date}
                                         </Moment>
                                       </td>
-                                      <td>{job.JobTitle}</td>
+                                      <td>
+                                        <Moment format='DD/MM/YYYY'>
+                                          {job.Validity}
+                                        </Moment>
+                                      </td>
                                       <td>
                                         <label class='badge badge-success'>
                                           Active
@@ -463,11 +467,10 @@ const PostedJobs = (props) => {
                                         <button
                                           class='btn  btn-rounded btn-dark'
                                           onClick={() => {
-                                            localStorage.setItem(
-                                              "selectedJob",
-                                              JSON.stringify(job)
-                                            );
-                                            history.push("/edit-jobs");
+                                            history.push({
+                                              pathname: "/edit-jobs",
+                                              state: job,
+                                            });
                                           }}
                                           style={{
                                             padding: "9px",
@@ -505,7 +508,11 @@ const PostedJobs = (props) => {
                                         {job.date}
                                       </Moment>
                                     </td>
-                                    <td>{job.JobTitle}</td>
+                                    <td>
+                                      <Moment format='DD/MM/YYYY'>
+                                        {job.Validity}
+                                      </Moment>
+                                    </td>
                                     <td>
                                       <label class='badge badge-success'>
                                         Active
@@ -527,11 +534,10 @@ const PostedJobs = (props) => {
                                       <button
                                         class='btn  btn-rounded btn-dark'
                                         onClick={() => {
-                                          localStorage.setItem(
-                                            "selectedJob",
-                                            JSON.stringify(job)
-                                          );
-                                          history.push("/edit-jobs");
+                                          history.push({
+                                            pathname: "/edit-jobs",
+                                            state: { selectedJob: job },
+                                          });
                                         }}
                                         style={{
                                           padding: "9px",

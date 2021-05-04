@@ -7,42 +7,42 @@ import Sidebar from "../../Sidebar/Sidebar";
 import makeToast from "../../../Toaster";
 
 const EditJob = (props) => {
-  const [jobObj, setJobObj] = useState(
-    JSON.parse(localStorage.getItem("selectedJob"))
-  );
+  const selectedJob = props.location.state;
 
-  const [CompanyName, setCompanyName] = useState(jobObj.CompanyName || "");
-  const [Desgination, setDesgination] = useState(jobObj.Desgination || "");
+  const [CompanyName, setCompanyName] = useState(selectedJob.CompanyName || "");
+  const [Desgination, setDesgination] = useState(selectedJob.Desgination || "");
   const [ContactPerson, setContactPerson] = useState(
-    jobObj.ContactPerson || ""
+    selectedJob.ContactPerson || ""
   );
   const [ContactNumber, setContactNumber] = useState(
-    jobObj.ContactNumber || ""
+    selectedJob.ContactNumber || ""
   );
-  const [ContactEmail, setContactEmail] = useState(jobObj.ContactEmail || "");
-  const [JobTitle, setJobTitle] = useState(jobObj.JobTitle || "");
-  const [JobType, setJobType] = useState(jobObj.JobType || "");
+  const [ContactEmail, setContactEmail] = useState(
+    selectedJob.ContactEmail || ""
+  );
+  const [JobTitle, setJobTitle] = useState(selectedJob.JobTitle || "");
+  const [JobType, setJobType] = useState(selectedJob.JobType || "");
   const [Qualificaiton, setQualificaiton] = useState(
-    jobObj.Qualificaiton || ""
+    selectedJob.Qualificaiton || ""
   );
-  const [Experience, setExperience] = useState(jobObj.Experience || "");
-  const [ExpectedCTC, setExpectedCTC] = useState(jobObj.ExpectedCTC || "");
-  const [Industry, setIndustry] = useState(jobObj.Industry || "");
+  const [Experience, setExperience] = useState(selectedJob.Experience || "");
+  const [ExpectedCTC, setExpectedCTC] = useState(selectedJob.ExpectedCTC || "");
+  const [Industry, setIndustry] = useState(selectedJob.Industry || "");
   const [KeySkills, setKeySkills] = useState([]);
-  // const [Location, setLocation] = useState(jobObj.Location.state || "");
+  // const [Location, setLocation] = useState(selectedJob.Location.state || "");
   const [PublishType, setPublishType] = useState("");
-  const [Remarks, setRemarks] = useState(jobObj.Remarks || "");
-  const [Description, setDescription] = useState(jobObj.Description || "");
-  const [SalaryRange, setSalaryRange] = useState(jobObj.SalaryRange || "");
+  const [Remarks, setRemarks] = useState(selectedJob.Remarks || "");
+  const [Description, setDescription] = useState(selectedJob.Description || "");
+  const [SalaryRange, setSalaryRange] = useState(selectedJob.SalaryRange || "");
   const [Distance, setDistance] = useState("");
-  const [PreviousExp, setPreviousExp] = useState(jobObj.PreviousExp || "");
+  const [PreviousExp, setPreviousExp] = useState(selectedJob.PreviousExp || "");
   const [CompanyHireRate, setCompanyHireRate] = useState(
-    jobObj.CompanyHireRate || ""
+    selectedJob.CompanyHireRate || ""
   );
   const [CompanyMemberSince, setCompanyMemberSince] = useState(
-    jobObj.CompanyMemberSince || ""
+    selectedJob.CompanyMemberSince || ""
   );
-  const [Category, setCategory] = useState(jobObj.Category || "");
+  const [Category, setCategory] = useState(selectedJob.Category || "");
 
   const history = useHistory();
   const [saved, setSaved] = useState();
@@ -50,7 +50,7 @@ const EditJob = (props) => {
   console.log(JSON.parse(localStorage.getItem("selectedJob")).CompanyName);
 
   const submitHandler = async () => {
-    console.log("fdsf", jobObj._id);
+    console.log("fdsf", selectedJob._id);
 
     const isSaved = await updateJobById(
       {
@@ -67,7 +67,7 @@ const EditJob = (props) => {
         PreviousExp,
         Category,
       },
-      jobObj._id
+      selectedJob._id
     );
 
     if (isSaved) {
@@ -77,26 +77,26 @@ const EditJob = (props) => {
 
   return (
     <div>
-      <div class='main-panel'>
-        <div class='content-wrapper'>
-          <div class='row'>
-            <div class='col-12 grid-margin'>
-              <div class='card'>
-                <div class='card-body'>
-                  <h4 class='card-title'>EDIT JOB {}</h4>
-                  <form class='form-sample'>
-                    <div class='row'>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+      <div className='main-panel'>
+        <div className='content-wrapper'>
+          <div className='row'>
+            <div className='col-12 grid-margin'>
+              <div className='card'>
+                <div className='card-body'>
+                  <h4 className='card-title'>EDIT JOB {}</h4>
+                  <form className='form-sample'>
+                    <div className='row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Company Name
                           </label>
                           <input
                             type='text'
-                            class='form-control col-sm-9'
+                            className='form-control col-sm-9'
                             id='exampleFormControlSelect2'
                             placeholder='Company Name'
                             value={CompanyName}
@@ -105,101 +105,101 @@ const EditJob = (props) => {
                             }}></input>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Title
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={JobTitle}
                               onChange={(e) => {
                                 setJobTitle(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Type
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={JobType}
                               onChange={(e) => {
                                 setJobType(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Salary Range
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={SalaryRange}
                               onChange={(e) => {
                                 setSalaryRange(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Job Category
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={Category}
                               onChange={(e) => {
                                 setCategory(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Description
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <textarea
                               value={Description}
                               onChange={(e) => {
                                 setDescription(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                               id='exampleTextarea1'
                               rows='4'></textarea>
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Starting
                           </label>
                           <select
-                            class='form-control col-sm-9'
+                            className='form-control col-sm-9'
                             id='exampleFormControlSelect2'>
                             <option>Immediately</option>
                             <option>1 Months</option>
@@ -216,12 +216,12 @@ const EditJob = (props) => {
                             <option>12 Months</option>
                           </select>
 
-                          {/* <div class="col-sm-5">
-                                  <div class="form-check">
-                                    <label class="form-check-label">
+                          {/* <div className="col-sm-5">
+                                  <div className="form-check">
+                                    <label className="form-check-label">
                                       <input
                                         type="radio"
-                                        class="form-check-input"
+                                        className="form-check-input"
                                         name="membershipRadios"
                                         id="membershipRadios2"
                                         value="option2"
@@ -248,43 +248,43 @@ const EditJob = (props) => {
                                */}
                         </div>
                       </div>
-                      {/*<div class='col-md-6'>
-                              <div class='form-group row'>
-                                <label class='col-sm-3 col-form-label'>
+                      {/*<div className='col-md-6'>
+                              <div className='form-group row'>
+                                <label className='col-sm-3 col-form-label'>
                                   Location
                                 </label>
-                                <div class='col-sm-9'>
+                                <div className='col-sm-9'>
                                   <input
                                     type='text'
                                     value={Location}
                                     onChange={(e) => {
                                       setLocation(e.target.value);
                                     }}
-                                    class='form-control'
+                                    className='form-control'
                                   />
                                 </div>
                               </div>
                                   </div>  */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Skills & Requirements
                           </label>
-                          <div class='col-sm-9'>
-                            <input type='text' class='form-control' />
+                          <div className='col-sm-9'>
+                            <input type='text' className='form-control' />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Publish Type
                           </label>
-                          <div class='col-sm-9'>
-                            <select class='form-control'>
+                          <div className='col-sm-9'>
+                            <select className='form-control'>
                               <option>Basic</option>
                               <option>Sponsored</option>
                               <option>Top Rated</option>
@@ -292,34 +292,34 @@ const EditJob = (props) => {
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Previous Experience
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <textarea
                               value={PreviousExp}
                               onChange={(e) => {
                                 setPreviousExp(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                               id='exampleTextarea1'
                               rows='4'></textarea>
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Validity
                           </label>
                           <div
                             id='datepicker-popup'
-                            class='input-group date datepicker col-sm-9'>
-                            <input type='date' class='form-control' />
-                            {/* <span class="input-group-addon input-group-append border-left">
-                                    <span class="mdi mdi-calendar input-group-text"></span>
+                            className='input-group date datepicker col-sm-9'>
+                            <input type='date' className='form-control' />
+                            {/* <span className="input-group-addon input-group-append border-left">
+                                    <span className="mdi mdi-calendar input-group-text"></span>
                                   </span> */}
                           </div>
                         </div>
@@ -331,11 +331,12 @@ const EditJob = (props) => {
                         e.preventDefault();
                         submitHandler();
                       }}
-                      class='btn btn-primary mr-2'>
+                      className='btn btn-primary mr-2'>
                       Submit
                     </button>
+
                     <button
-                      class='btn btn-light'
+                      className='btn btn-light'
                       onClick={() => {
                         history.push("/posted-jobs");
                       }}>
@@ -347,9 +348,9 @@ const EditJob = (props) => {
             </div>
           </div>
         </div>
-        <footer class='footer'>
-          <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-            <span class='text-muted text-center text-sm-left d-block d-sm-inline-block'>
+        <footer className='footer'>
+          <div className='d-sm-flex justify-content-center justify-content-sm-between'>
+            <span className='text-muted text-center text-sm-left d-block d-sm-inline-block'>
               Copyright © 2021{" "}
               <a href='https://www.toodecimal.com' target='_blank'>
                 Too Decimal

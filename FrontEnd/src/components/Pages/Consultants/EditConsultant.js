@@ -8,20 +8,22 @@ import makeToast from "../../../Toaster";
 
 const EditConsultant = (props) => {
   const [edit, setEdit] = useState(false);
-  const [consultant, setConsultant] = useState(
-    JSON.parse(localStorage.getItem("consultant"))
-  );
-  const [name, setName] = useState(consultant.name || "");
-  const [sector, setSector] = useState(consultant.sector || "");
-  const [about, setAbout] = useState(consultant.about || "");
+
+  const selectedConsultant = props.location.state && props.location.state;
+
+  const [name, setName] = useState(selectedConsultant.name || "");
+  const [sector, setSector] = useState(selectedConsultant.sector || "");
+  const [about, setAbout] = useState(selectedConsultant.about || "");
   const [membershipDate, setMembershipDate] = useState(
-    consultant.membershipDate || ""
+    selectedConsultant.membershipDate || ""
   );
   const [educationInfo, setEducationInfo] = useState(
-    consultant.educationInfo || ""
+    selectedConsultant.educationInfo || ""
   );
   const [saved, setSaved] = useState();
-  const [experience, setExperience] = useState(consultant.experience || "");
+  const [experience, setExperience] = useState(
+    selectedConsultant.experience || ""
+  );
   const history = useHistory();
 
   const submitHandler = async () => {
@@ -34,7 +36,7 @@ const EditConsultant = (props) => {
         educationInfo,
         experience,
       },
-      consultant._id
+      selectedConsultant._id
     );
 
     if (isUpdated) {
@@ -223,5 +225,5 @@ const EditConsultant = (props) => {
 };
 
 export default connect(null, {
-  updateConsultantByID,
+  // updateConsultantByID,
 })(EditConsultant);

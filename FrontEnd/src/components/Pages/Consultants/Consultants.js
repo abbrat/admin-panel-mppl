@@ -122,11 +122,10 @@ const Consultants = (props) => {
                                       paddingRight: "15px",
                                     }}
                                     onClick={() => {
-                                      localStorage.setItem(
-                                        "consultant",
-                                        JSON.stringify(consultant)
-                                      );
-                                      history.push("/edit-consultant");
+                                      history.push({
+                                        pathname: "/edit-consultant",
+                                        state: consultant,
+                                      });
                                     }}>
                                     Edit
                                   </button>
@@ -137,14 +136,11 @@ const Consultants = (props) => {
                                       padding: "9px",
                                       paddingLeft: "10px",
                                       paddingRight: "10px",
-                                      backgroundColor: consultant.banAccount
-                                        ? "green"
-                                        : "red",
                                     }}
                                     onClick={() => {
                                       banConsultant(consultant._id);
                                     }}>
-                                    {consultant.banAccount ? "Banned" : "Block"}
+                                    Block
                                   </button>
                                 </td>
                               </tr>
@@ -177,6 +173,6 @@ const mapStateToProps = (state) => ({
   consultants: state.admin.consultants,
 });
 export default connect(mapStateToProps, {
-  getConsultants,
-  banConsultantById,
+  // getConsultants,
+  // banConsultantById,
 })(Consultants);

@@ -21,6 +21,7 @@ const PendingJobs = () => {
 
   const getAllUnApprovedJobs = async () => {
     const jobs = await getUnApprovedJobs();
+    console.log(jobs);
     if (jobs) {
       await setJobs(jobs);
     }
@@ -90,7 +91,11 @@ const PendingJobs = () => {
                                     {job.date}
                                   </Moment>
                                 </td>
-                                <td>{job.JobTitle}</td>
+                                <td>
+                                  <Moment format='DD/MM/YYYY'>
+                                    {job.Validity}
+                                  </Moment>
+                                </td>
                                 <td>
                                   <label class='badge badge-success'>
                                     Active
@@ -105,11 +110,10 @@ const PendingJobs = () => {
                                       paddingRight: "15px",
                                     }}
                                     onClick={() => {
-                                      localStorage.setItem(
-                                        "selectedJob",
-                                        JSON.stringify(job)
-                                      );
-                                      history.push("/edit-jobs");
+                                      history.push({
+                                        pathname: "/edit-jobs",
+                                        state: job,
+                                      });
                                     }}>
                                     View
                                   </button>

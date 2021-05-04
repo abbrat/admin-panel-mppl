@@ -6,6 +6,7 @@ import { createJob } from "../../../actions/adminActions";
 
 import makeToast from "../../../Toaster";
 import Select from "react-select";
+import { Link } from "react-router-dom";
 
 const AddJobs = (props) => {
   const history = useHistory();
@@ -51,9 +52,11 @@ const AddJobs = (props) => {
     let arr = [];
     try {
       const res = await axios.get("http://localhost:5000/api/company/all");
-      if (res.data.length > 0) {
+
+      console.log(res.data.c);
+      if (res.data.cmp.length > 0) {
         // setCompanies(res.data);
-        arr = res.data;
+        arr = res.data.cmp;
       }
       let arr2 = [];
       arr.map((company) => {
@@ -182,19 +185,19 @@ const AddJobs = (props) => {
 
   return (
     <div>
-      <div class='main-panel'>
-        <div class='content-wrapper'>
-          <div class='row'>
-            <div class='col-12 grid-margin'>
-              <div class='card'>
-                <div class='card-body'>
-                  <h4 class='card-title'>Add JOB {}</h4>
-                  <form class='form-sample'>
-                    <div class='row'>
-                      {/* <div class="col-md-6">
-                              <div class="form-group row">
+      <div className='main-panel'>
+        <div className='content-wrapper'>
+          <div className='row'>
+            <div className='col-12 grid-margin'>
+              <div className='card'>
+                <div className='card-body'>
+                  <h4 className='card-title'>Add JOB {}</h4>
+                  <form className='form-sample'>
+                    <div className='row'>
+                      {/* <div className="col-md-6">
+                              <div className="form-group row">
                                 <label
-                                  class="col-sm-3"
+                                  className="col-sm-3"
                                   for="exampleFormControlSelect2"
                                   style={{ alignSelf: "center" }}
                                 >
@@ -202,7 +205,7 @@ const AddJobs = (props) => {
                                 </label>
                                 <input
                                   type="text"
-                                  class="form-control col-sm-9"
+                                  className="form-control col-sm-9"
                                   id="exampleFormControlSelect2"
                                   placeholder="Company Name"
                                   value={CompanyName}
@@ -212,17 +215,17 @@ const AddJobs = (props) => {
                                 ></input>
                               </div>
                             </div> */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Company Name
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             {/* <select
                                     onChange={(e) => {
                                       setCompanyName(e.target.value);
                                     }}
-                                    class="form-control"
+                                    className="form-control"
                                   >
                                     {companies.length == 0 ? (
                                       <option>No Companies</option>
@@ -245,12 +248,12 @@ const AddJobs = (props) => {
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Title
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -258,17 +261,17 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setJobTitle(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Type
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -276,17 +279,17 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setJobType(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Salary Range
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='number'
                               required={true}
@@ -294,38 +297,38 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setSalaryRange(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      {/* <div class="col-md-6">
-                              <div class="form-group row">
+                      {/* <div className="col-md-6">
+                              <div className="form-group row">
                                 <label
-                                  class="col-sm-3"
+                                  className="col-sm-3"
                                   for="exampleFormControlSelect2"
                                   style={{ alignSelf: "center" }}
                                 >
                                   Job Category
                                 </label>
-                                <div class="col-sm-9">
+                                <div className="col-sm-9">
                                   <input
                                     type="text"
                                     value={Category}
                                     onChange={(e) => {
                                       setCategory(e.target.value);
                                     }}
-                                    class="form-control"
+                                    className="form-control"
                                   />
                                 </div>
                               </div>
                             </div> */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Category
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <Select
                               options={categories}
                               placeholder='Categories'
@@ -336,15 +339,15 @@ const AddJobs = (props) => {
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Desgination
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               required={true}
                               type='text'
@@ -352,20 +355,20 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setDesgination(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Contact Person
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -373,20 +376,20 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setContactPerson(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Contact Number
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='number'
                               required={true}
@@ -394,20 +397,20 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setContactNumber(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
                           <label
-                            class='col-sm-3'
+                            className='col-sm-3'
                             for='exampleFormControlSelect2'
                             style={{ alignSelf: "center" }}>
                             Contact Email
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='email'
                               required={true}
@@ -415,35 +418,35 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setContactEmail(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Description
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <textarea
                               value={Description}
                               onChange={(e) => {
                                 setDescription(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                               id='exampleTextarea1'
                               rows='4'></textarea>
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Starting
                           </label>
                           <select
-                            class='form-control col-sm-9'
+                            className='form-control col-sm-9'
                             id='exampleFormControlSelect2'
                             onChange={(e) => {
                               setStarting(e.target.value);
@@ -464,29 +467,29 @@ const AddJobs = (props) => {
                           </select>
                         </div>
                       </div>
-                      {/* <div class="col-md-6">
-                              <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">
+                      {/* <div className="col-md-6">
+                              <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">
                                   Location
                                 </label>
-                                <div class="col-sm-9">
+                                <div className="col-sm-9">
                                   <input
                                     type="text"
                                     value={Location}
                                     onChange={(e) => {
                                       setLocation(e.target.value);
                                     }}
-                                    class="form-control"
+                                    className="form-control"
                                   />
                                 </div>
                               </div>
                             </div> */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Location
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <Select
                               options={locations}
                               placeholder='Locations'
@@ -498,31 +501,31 @@ const AddJobs = (props) => {
                           </div>
                         </div>
                       </div>
-                      {/* <div class="col-md-6">
-                              <div class="form-group row">
+                      {/* <div className="col-md-6">
+                              <div className="form-group row">
                                 <label
-                                  class="col-sm-3"
+                                  className="col-sm-3"
                                   for="exampleFormControlSelect2"
                                   style={{ alignSelf: "center" }}
                                 >
                                   Skills & Requirements
                                 </label>
-                                <div class="col-sm-9">
-                                  <input type="text" class="form-control" />
+                                <div className="col-sm-9">
+                                  <input type="text" className="form-control" />
                                 </div>
                               </div>
                             </div> */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Publish Type
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <select
                               onChange={(e) => {
                                 setPublishType(e.target.value);
                               }}
-                              class='form-control'>
+                              className='form-control'>
                               <option>Basic</option>
                               <option>Sponsored</option>
                               <option>Top Rated</option>
@@ -530,50 +533,52 @@ const AddJobs = (props) => {
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Previous Experience
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <textarea
                               value={PreviousExp}
                               onChange={(e) => {
                                 setPreviousExp(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                               id='exampleTextarea1'
                               rows='4'></textarea>
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Validity
                           </label>
                           <div
                             id='datepicker-popup'
-                            class='input-group date datepicker col-sm-9'>
+                            className='input-group date datepicker col-sm-9'>
                             <input
                               type='date'
                               required={true}
-                              class='form-control'
+                              className='form-control'
                               value={Validity}
                               onChange={(e) => {
                                 setValidity(e.target.value);
                               }}
                             />
-                            {/* <span class="input-group-addon input-group-append border-left">
-                                    <span class="mdi mdi-calendar input-group-text"></span>
+                            {/* <span className="input-group-addon input-group-append border-left">
+                                    <span className="mdi mdi-calendar input-group-text"></span>
                                   </span> */}
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>Logo</label>
-                          <div class='col-sm-9'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
+                            Logo
+                          </label>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -582,18 +587,18 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setLogo(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
 
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             About Company
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -601,18 +606,18 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setAboutCompany(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
 
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Positions
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='number'
                               required={true}
@@ -623,17 +628,17 @@ const AddJobs = (props) => {
                                   setPositions(0);
                                 }
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Questions
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -641,17 +646,17 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setQuestions(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Qualification
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               required={true}
@@ -659,17 +664,17 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setQualificaiton(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             ExpectedCTC
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='number'
                               required={true}
@@ -677,34 +682,34 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setExpectedCTC(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Industry
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={Industry}
                               onChange={(e) => {
                                 setIndustry(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Key Skills
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={KeySkills}
@@ -712,15 +717,17 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setKeySkills(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>Remarks</label>
-                          <div class='col-sm-9'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
+                            Remarks
+                          </label>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={Remarks}
@@ -728,34 +735,34 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setRemarks(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      {/* <div class="col-md-6">
-                              <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">
+                      {/* <div className="col-md-6">
+                              <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">
                                   Distance
                                 </label>
-                                <div class="col-sm-9">
+                                <div className="col-sm-9">
                                   <input
                                     type="text"
                                     value={Distance}
                                     onChange={(e) => {
                                       setDistance(e.target.value);
                                     }}
-                                    class="form-control"
+                                    className="form-control"
                                   />
                                 </div>
                               </div>
                             </div> */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Company Hire Rate
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               disabled
@@ -764,22 +771,22 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setCompanyHireRate(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Company Membership Since
                           </label>
                           <div
                             id='datepicker-popup'
-                            class='input-group date datepicker col-sm-9'>
+                            className='input-group date datepicker col-sm-9'>
                             <input
                               type='text'
-                              class='form-control'
+                              className='form-control'
                               disabled
                               required={true}
                               value={CompanyMemberSince}
@@ -787,18 +794,18 @@ const AddJobs = (props) => {
                                 setCompanyMemberSince(e.target.value);
                               }}
                             />
-                            <span class='input-group-addon input-group-append border-left'>
-                              <span class='mdi mdi-calendar input-group-text'></span>
+                            <span className='input-group-addon input-group-append border-left'>
+                              <span className='mdi mdi-calendar input-group-text'></span>
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Job Status
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <input
                               type='text'
                               value={JobStatus}
@@ -806,34 +813,34 @@ const AddJobs = (props) => {
                               onChange={(e) => {
                                 setJobStatus(e.target.value);
                               }}
-                              class='form-control'
+                              className='form-control'
                             />
                           </div>
                         </div>
                       </div>
-                      {/* <div class="col-md-6">
-                              <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">
+                      {/* <div className="col-md-6">
+                              <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">
                                   Posting Type
                                 </label>
-                                <div class="col-sm-9">
+                                <div className="col-sm-9">
                                   <input
                                     type="text"
                                     value={PostingType}
                                     onChange={(e) => {
                                       setPostingType(e.target.value);
                                     }}
-                                    class="form-control"
+                                    className="form-control"
                                   />
                                 </div>
                               </div>
                             </div> */}
-                      <div class='col-md-6'>
-                        <div class='form-group row'>
-                          <label class='col-sm-3 col-form-label'>
+                      <div className='col-md-6'>
+                        <div className='form-group row'>
+                          <label className='col-sm-3 col-form-label'>
                             Featured
                           </label>
-                          <div class='col-sm-9'>
+                          <div className='col-sm-9'>
                             <div
                               style={{
                                 display: "flex",
@@ -875,12 +882,13 @@ const AddJobs = (props) => {
                     </div>
                     <button
                       onClick={submitHandler}
-                      class='btn btn-primary mr-2'>
+                      className='btn btn-primary mr-2'>
                       Submit
                     </button>
+
                     <button
                       type='reset'
-                      class='btn btn-light'
+                      className='btn btn-light'
                       onClick={() => {
                         history.push("/posted-jobs");
                       }}>
@@ -892,9 +900,9 @@ const AddJobs = (props) => {
             </div>
           </div>
         </div>
-        <footer class='footer'>
-          <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-            <span class='text-muted text-center text-sm-left d-block d-sm-inline-block'>
+        <footer className='footer'>
+          <div className='d-sm-flex justify-content-center justify-content-sm-between'>
+            <span className='text-muted text-center text-sm-left d-block d-sm-inline-block'>
               Copyright © 2021{" "}
               <a href='https://www.toodecimal.com' target='_blank'>
                 Too Decimal

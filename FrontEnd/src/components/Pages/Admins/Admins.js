@@ -6,12 +6,15 @@ import { banAdminById, getAdmins } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import AdminAccessModal from "./AdminAccessModal";
+import { useHistory } from "react-router";
 
 const Admins = (props) => {
   const [adminArr, setAdminArr] = useState([]);
   const [perPage, setPerPage] = useState("10");
   const [pageNo, setPageNo] = useState("1");
   const [page, setPage] = useState();
+
+  const history = useHistory();
 
   const [admins, setAdmins] = useState([]);
 
@@ -113,23 +116,21 @@ const Admins = (props) => {
                                   <td>{admin.email}</td>
                                   <td>{admin.number}</td>
                                   <td>
-                                    <a href='/edit-admin'>
-                                      <button
-                                        class='btn btn-primary btn-rounded'
-                                        style={{
-                                          padding: "10px",
-                                          paddingLeft: "15px",
-                                          paddingRight: "15px",
-                                        }}
-                                        onClick={() => {
-                                          localStorage.setItem(
-                                            "selectedAdmin",
-                                            JSON.stringify(admin)
-                                          );
-                                        }}>
-                                        View
-                                      </button>
-                                    </a>
+                                    <button
+                                      class='btn btn-primary btn-rounded'
+                                      style={{
+                                        padding: "10px",
+                                        paddingLeft: "15px",
+                                        paddingRight: "15px",
+                                      }}
+                                      onClick={() => {
+                                        history.push({
+                                          pathname: "/edit-admin",
+                                          state: admin,
+                                        });
+                                      }}>
+                                      View
+                                    </button>
                                   </td>
                                   <td>
                                     <button

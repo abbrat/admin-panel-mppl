@@ -3,9 +3,12 @@ import { connect } from "react-redux";
 import { getBannedUser, unBanUserById } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
+import { useHistory } from "react-router";
 
 const BlockedCandidates = () => {
   const [bannedUsers, setBannedusers] = useState([]);
+
+  const history = useHistory();
 
   const getAllBannedUsers = async () => {
     const candidates = await getBannedUser();
@@ -75,6 +78,12 @@ const BlockedCandidates = () => {
                                       padding: "10px",
                                       paddingLeft: "15px",
                                       paddingRight: "15px",
+                                    }}
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: "/edit-candidate",
+                                        state: user,
+                                      });
                                     }}>
                                     View
                                   </button>

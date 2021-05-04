@@ -307,6 +307,12 @@ const Employers = () => {
                                         marginRight: "5px",
                                         paddingLeft: "15px",
                                         paddingRight: "15px",
+                                      }}
+                                      onClick={() => {
+                                        history.push({
+                                          pathname: "/edit-employer",
+                                          state: company,
+                                        });
                                       }}>
                                       Edit
                                     </button>
@@ -352,11 +358,10 @@ const Employers = () => {
                                       paddingRight: "15px",
                                     }}
                                     onClick={() => {
-                                      localStorage.setItem(
-                                        "company",
-                                        JSON.stringify(company)
-                                      );
-                                      history.push("/edit-employer");
+                                      history.push({
+                                        pathname: "/edit-employer",
+                                        state: company,
+                                      });
                                     }}>
                                     Edit
                                   </button>

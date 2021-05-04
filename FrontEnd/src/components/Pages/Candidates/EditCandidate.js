@@ -15,38 +15,39 @@ import InputArray from "./InputArray";
 const EditCandidate = (props) => {
   const [edit, setEdit] = useState(false);
 
-  const [user, setUser] = useState({
-    user: JSON.parse(localStorage.getItem("userSelected")),
-  });
+  const selectedCandidated = props.location.state;
+  console.log(selectedCandidated);
 
-  const [name, setName] = useState(user.user.name || "");
-  const [email, setEmail] = useState(user.user.email || "");
-  const [number, setNumber] = useState(user.user.number || "");
-  const [gender, setGender] = useState(user.user.gender || "");
-  const [address, setAddress] = useState(user.user.address || "");
+  const [name, setName] = useState(selectedCandidated.name || "");
+  const [email, setEmail] = useState(selectedCandidated.email || "");
+  const [number, setNumber] = useState(selectedCandidated.number || "");
+  const [gender, setGender] = useState(selectedCandidated.gender || "");
+  const [address, setAddress] = useState(selectedCandidated.address || "");
 
   const [workLocationArray, setLocationArray] = useState(
-    user.user.preferedWorkLocation
+    selectedCandidated.preferedWorkLocation
   );
   const [workLocationVal, setWorkLocationVal] = useState("");
 
-  const [skillArray, setSkillArray] = useState(user.user.skillSet);
+  const [skillArray, setSkillArray] = useState(selectedCandidated.skillSet);
   const [skillVal, setSkillVal] = useState("");
 
-  const [languageArray, setLanguageArray] = useState(user.user.languages);
+  const [languageArray, setLanguageArray] = useState(
+    selectedCandidated.languages
+  );
   const [langVal, setLangval] = useState("");
 
-  const [about, setAbout] = useState(user.user.about || "");
-  const [linkdin, setLinkdin] = useState(user.user.linkdin || "");
-  const [dob, setDOB] = useState(user.user.dob || "");
+  const [about, setAbout] = useState(selectedCandidated.about || "");
+  const [linkdin, setLinkdin] = useState(selectedCandidated.linkdin || "");
+  const [dob, setDOB] = useState(selectedCandidated.dob || "");
   const [maritalStatus, setMaritalStatus] = useState(
-    user.user.maritalStatus || ""
+    selectedCandidated.maritalStatus || ""
   );
   const [subscription, setSubscription] = useState(
-    user.user.subscription || ""
+    selectedCandidated.subscription || ""
   );
   // const [preferedWorkLocation, setPreferedWorkLocation] = useState(
-  //   user.user.email || ""
+  //   selectedCandidated.email || ""
   // );
   const [resume, setResume] = useState(null);
   const [videoResume, setVideoResume] = useState(null);
@@ -75,7 +76,7 @@ const EditCandidate = (props) => {
     return formatted_date;
   }
 
-  console.log(user.user);
+  console.log(selectedCandidated);
 
   const dataSubmit = async () => {
     // console.log("Location", workLocationArray);
@@ -109,7 +110,10 @@ const EditCandidate = (props) => {
 
     console.log(formData);
 
-    const isUserUpdated = await updateUserById(formData, user.user._id);
+    const isUserUpdated = await updateUserById(
+      formData,
+      selectedCandidated._id
+    );
 
     console.log(isUserUpdated);
 
@@ -434,7 +438,7 @@ const EditCandidate = (props) => {
                             <form class='form-inline repeater'>
                               <div data-repeater-list='group-a'>
                                 <div data-repeater-item class='d-flex mb-2'>
-                                  <label class='sr-only'>Users</label>
+                                  <label class='sr-only'>Skills</label>
                                   <div class='input-group mb-2 mr-sm-2 mb-sm-0'>
                                     <div class='input-group-prepend'>
                                       <span class='input-group-text'>@</span>
@@ -447,7 +451,7 @@ const EditCandidate = (props) => {
                                       onChange={(e) => {
                                         setSkillVal(e.target.value);
                                       }}
-                                      placeholder='Add user'
+                                      placeholder='Add Skills'
                                       disabled={!edit}
                                     />
                                   </div>
@@ -492,7 +496,7 @@ const EditCandidate = (props) => {
                             <form class='form-inline repeater'>
                               <div data-repeater-list='group-a'>
                                 <div data-repeater-item class='d-flex mb-2'>
-                                  <label class='sr-only'>Users</label>
+                                  <label class='sr-only'>Locations</label>
                                   <div class='input-group mb-2 mr-sm-2 mb-sm-0'>
                                     <div class='input-group-prepend'>
                                       <span class='input-group-text'>@</span>
@@ -505,7 +509,7 @@ const EditCandidate = (props) => {
                                         setWorkLocationVal(e.target.value);
                                       }}
                                       value={workLocationVal}
-                                      placeholder='Add user'
+                                      placeholder='Add Locations'
                                       disabled={!edit}
                                     />
                                   </div>
@@ -550,7 +554,7 @@ const EditCandidate = (props) => {
                             <form class='form-inline repeater'>
                               <div data-repeater-list='group-a'>
                                 <div data-repeater-item class='d-flex mb-2'>
-                                  <label class='sr-only'>Users</label>
+                                  <label class='sr-only'>Languages</label>
                                   <div class='input-group mb-2 mr-sm-2 mb-sm-0'>
                                     <div class='input-group-prepend'>
                                       <span class='input-group-text'>@</span>
@@ -560,7 +564,7 @@ const EditCandidate = (props) => {
                                       class='form-control form-control-sm'
                                       id='inlineFormInputGroup1'
                                       value={langVal}
-                                      placeholder='Add user'
+                                      placeholder='Add Languages'
                                       onChange={(e) => {
                                         setLangval(e.target.value);
                                       }}
@@ -602,7 +606,7 @@ const EditCandidate = (props) => {
                       class='btn btn-primary mr-2'
                       onClick={(e) => {
                         e.preventDefault();
-                        dataSubmit(user);
+                        dataSubmit();
                       }}>
                       Submit
                     </button>

@@ -13,29 +13,40 @@ const EditWebinars = (props) => {
   const [saved, setSaved] = useState();
   const history = useHistory();
   const [edit, setEdit] = useState(false);
-  const [webinar, setWebinar] = useState(
-    JSON.parse(localStorage.getItem("webinar"))
-  );
 
-  const [webinarLink, setWebinarLink] = useState(webinar.webinarLink || "");
-  const [webinarTitle, setWebinarTitle] = useState(webinar.webinarTitle || "");
-  const [webinarType, setWebinarType] = useState(webinar.webinarType || "");
-  const [webinarDate, setWebinarDate] = useState(webinar.webinarDate || "");
-  const [webinarTime, setWebinarTime] = useState(webinar.webinarTime || "");
+  const selectedWebinar = props.location.state && props.location.state;
+
+  const [webinarLink, setWebinarLink] = useState(
+    selectedWebinar.webinarLink || ""
+  );
+  const [webinarTitle, setWebinarTitle] = useState(
+    selectedWebinar.webinarTitle || ""
+  );
+  const [webinarType, setWebinarType] = useState(
+    selectedWebinar.webinarType || ""
+  );
+  const [webinarDate, setWebinarDate] = useState(
+    selectedWebinar.webinarDate || ""
+  );
+  const [webinarTime, setWebinarTime] = useState(
+    selectedWebinar.webinarTime || ""
+  );
   const [webinarDescription, setWebinarDescription] = useState(
-    webinar.webinarDescription || ""
+    selectedWebinar.webinarDescription || ""
   );
   const [webinarKeywords, setWebinarKeywords] = useState([]);
   const [webinarAudience, setWebinarAudience] = useState(
-    webinar.webinarAudience || ""
+    selectedWebinar.webinarAudience || ""
   );
   const [instructorName, setInstructorName] = useState(
-    webinar.instructorName || ""
+    selectedWebinar.instructorName || ""
   );
   const [aboutInstructor, setaboutInstructor] = useState(
-    webinar.aboutInstructor || ""
+    selectedWebinar.aboutInstructor || ""
   );
-  const [designation, setDesignation] = useState(webinar.designation || "");
+  const [designation, setDesignation] = useState(
+    selectedWebinar.designation || ""
+  );
   // const [companies, setCompanies] = useState([]);
   // const [companies, setCompanies] = useState([]);
   const [CompanyName, setCompanyName] = useState("");
@@ -101,7 +112,7 @@ const EditWebinars = (props) => {
         webinarTime,
         webinarType,
       },
-      webinar._id
+      selectedWebinar._id
     );
 
     if (isUpdated) {
@@ -372,7 +383,14 @@ const EditWebinars = (props) => {
                       class='btn btn-primary mr-2'>
                       Submit
                     </button>
-                    <button class='btn btn-light'>Cancel</button>
+                    <button
+                      class='btn btn-light'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        history.goBack();
+                      }}>
+                      Cancel
+                    </button>
                   </form>
                 </div>
               </div>

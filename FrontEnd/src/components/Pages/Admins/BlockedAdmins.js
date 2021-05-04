@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router";
 import { getBannedAdmins, unBanAdmin } from "../../../actions/adminActions";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 
 const BlockedAdmins = (props) => {
   const [bannedAdmins, setBannedAdmins] = useState([]);
+
+  const history = useHistory();
 
   const getAllBannedAdmins = async () => {
     const admins = await getBannedAdmins();
@@ -71,6 +74,12 @@ const BlockedAdmins = (props) => {
                                       padding: "10px",
                                       paddingLeft: "15px",
                                       paddingRight: "15px",
+                                    }}
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: "/edit-admin",
+                                        state: admin,
+                                      });
                                     }}>
                                     View
                                   </button>

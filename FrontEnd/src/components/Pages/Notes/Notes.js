@@ -137,7 +137,7 @@ const Notes = () => {
 
   useEffect(() => {
     getNotes();
-  }, [arr]);
+  }, [pageNo]);
 
   useEffect(() => {
     if (nameFilter !== "" || emailFilter !== "" || numberFilter !== "") {
@@ -292,25 +292,22 @@ const Notes = () => {
                                     </a>
                                   </td>
                                   <td>
-                                    <a
+                                    <button
+                                      class='btn  btn-rounded btn-dark'
+                                      style={{
+                                        padding: "9px",
+                                        marginRight: "5px",
+                                        paddingLeft: "15px",
+                                        paddingRight: "15px",
+                                      }}
                                       onClick={() => {
-                                        localStorage.setItem(
-                                          "notes",
-                                          JSON.stringify(note)
-                                        );
-                                        history.push("/edit-notes");
+                                        history.push({
+                                          pathname: "/edit-notes",
+                                          state: note,
+                                        });
                                       }}>
-                                      <button
-                                        class='btn  btn-rounded btn-dark'
-                                        style={{
-                                          padding: "9px",
-                                          marginRight: "5px",
-                                          paddingLeft: "15px",
-                                          paddingRight: "15px",
-                                        }}>
-                                        Edit
-                                      </button>
-                                    </a>
+                                      Edit
+                                    </button>
                                     <button
                                       class='btn  btn-rounded btn-danger'
                                       style={{
@@ -370,11 +367,10 @@ const Notes = () => {
                                       paddingRight: "15px",
                                     }}
                                     onClick={() => {
-                                      localStorage.setItem(
-                                        "notes",
-                                        JSON.stringify(note)
-                                      );
-                                      history.push("/edit-notes");
+                                      history.push({
+                                        pathname: "/edit-notes",
+                                        state: note,
+                                      });
                                     }}>
                                     Edit
                                   </button>

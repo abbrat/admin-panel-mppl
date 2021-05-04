@@ -77,25 +77,22 @@ const BlockedConsultants = (props) => {
                                   </button>
                                 </td>
                                 <td>
-                                  <a
+                                  <button
+                                    class='btn  btn-rounded btn-dark'
+                                    style={{
+                                      padding: "9px",
+                                      marginRight: "5px",
+                                      paddingLeft: "15px",
+                                      paddingRight: "15px",
+                                    }}
                                     onClick={() => {
-                                      localStorage.setItem(
-                                        "consultant",
-                                        JSON.stringify(consultant)
-                                      );
-                                      history.push("/edit-consultant");
+                                      history.push({
+                                        pathname: "/edit-consultant",
+                                        state: consultant,
+                                      });
                                     }}>
-                                    <button
-                                      class='btn  btn-rounded btn-dark'
-                                      style={{
-                                        padding: "9px",
-                                        marginRight: "5px",
-                                        paddingLeft: "15px",
-                                        paddingRight: "15px",
-                                      }}>
-                                      Edit
-                                    </button>
-                                  </a>
+                                    Edit
+                                  </button>
                                   <button
                                     class='btn  btn-rounded btn-success'
                                     style={{

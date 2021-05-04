@@ -617,11 +617,8 @@ router.get("/users/:page/:perPage", async (req, res) => {
     const jobs = await Jobs.find({ jobStatus: "Approved" })
       .skip(skip)
       .limit(limit);
-    if (jobs) {
-      res.json({ status: "success", jobs });
-    }
 
-    res.json({ status: "failure" });
+    res.json({ status: "success", jobs });
   } catch (error) {
     console.log(error.message);
   }
